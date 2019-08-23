@@ -1,9 +1,14 @@
 from django.shortcuts import render
-from .models import TechTalk
+from .models import Post
+from .crawl import Spider
 from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponse
 
-# Create your apis here.
 
 def crawl(request):
-    TechTalk().save()
+    sp = Spider()
+    # res = sp.start_requests()
+    # for r in res:
+    #     print(r)
+    # sp.parse(res)
+
     return HttpResponse("1")

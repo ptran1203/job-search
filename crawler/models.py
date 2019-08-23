@@ -27,63 +27,29 @@ def create_soup(url):
     return bs(response.text, 'html.parser')
 
 # Create your models here.
-class BaseCrawler(models.Model):
-    # crawl_url = ''
-    # DB fields
+class Post(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     post_img = models.CharField(max_length=255)
     post_url = models.CharField(max_length=255)
     create_date = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return self.title[:50]
+
     @classmethod
     def create(cls, obj):
-        # print(obj)
-        print(obj['title'])
+        """
+        Create new post and save
+        """
         new = cls(
             title = obj['title'][:255],
             content = obj['content'],
             post_img = obj['post_img'][:255],
             post_url = obj['post_url'][:255],
         )
-        print("DONENEEE")
         new.save()
         return new
 
     def get_date(self):
         return self.create_date.date()
-
-class TechTalk(BaseCrawler):
-
-    def __init__(self):
-        self.data = self.crawl()
-    @staticmethod
-    def crawl():
-        """
-        Crawl data
-        """
-        url = 'https://techtalk.vn/resources'
-        soup = create_soup(url)
-        items = soup.find_all('div', ['td-block-span4'])
-        data = []
-        for item in items:
-            title = item.find('h3', ['entry-title'])
-            if title:
-                title = title.text or ''
-            content = item.find('div', ['td-excerpt'])
-            if content:
-                content = content.text or ''
-            data.append({
-                'post_url': extract_url(item),
-                'post_img': extract_img(item),
-                'title': title,
-                'content': content
-            })
-        
-        return data or {}
-
-    def save(self):
-        for d in self.data:
-            super().create(d)
-
-
