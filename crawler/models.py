@@ -9,27 +9,11 @@ headers = {
 }
 
 
-# helper
-def extract_url(item):
-    atag = item.find('a')
-    if atag:
-        return atag.get('href')
-    return '#'
-
-def extract_img(item):
-    img = item.find('img')
-    if img:
-        return img.get('src')
-    return 'https://aliceasmartialarts.com/wp-content/uploads/2017/04/default-image.jpg'
-
-def create_soup(url):
-    response = get(url, headers=headers)
-    return bs(response.text, 'html.parser')
-
 # Create your models here.
 class Post(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
+    salary_range = models.CharField(max_length=50)
     post_img = models.CharField(max_length=255)
     post_url = models.CharField(max_length=255)
     create_date = models.DateTimeField(default=timezone.now)
@@ -47,6 +31,7 @@ class Post(models.Model):
             content = obj['content'],
             post_img = obj['post_img'][:255],
             post_url = obj['post_url'][:255],
+            salary_range = obj['salary_range'],
         )
         new.save()
         return new
