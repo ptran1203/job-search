@@ -39,24 +39,27 @@ def parse(url):
         Parse detail
         """
         r =  requests.get(url, headers=rand_headers())
+        r.encoding = 'utf-8'
         soup = BeautifulSoup(r.text, 'html.parser')
         item = soup.find('div', ['job-detail-data-wrapper'])
 
-        print(item)
+        if not item: return {}
 
         title = item.find('h3', ['job-name'])
         if title:
             title = title.text or ''
-        content = item.find('div', ['td-excerpt'])
-        # if content:
-            # content = content.text or ''
+
+        content = soup.find_all('div', ['read-more-content'])
+        # print(_.attrs['class'] for _ in content)
+        if content:
+            content = "\n\n".join([_.text.strip() or '' for _ in content])
 
         salary_range = item.find('strong', ['hidden-xs'])
 
         if salary_range:
-            salary_range = salary_range.text or ''
+            salary_range = (salary_range.text or '').strip()
         return {
-            'post_url': extract_url(item),
+            'post_url': url,
             'post_img': extract_img(item),
             'title': title,
             'content': content,
@@ -102,12 +105,10 @@ def start():
     process.start()
     import json
     import time
-    print(job_url)
 
     with open('save.json', 'w') as f:
-        for url in job_url[:1]:
+        for url in job_url:
             data = parse(url)
-            print("STATUS", data.keys())
             json.dump(data, f)
             time.sleep(5)
 
