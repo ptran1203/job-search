@@ -112,4 +112,5 @@ def start():
             json.dump(data, f)
             time.sleep(5)
 
-start()
+if __name__ == '__main__':
+    start()
