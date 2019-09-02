@@ -66,8 +66,6 @@ def parse(url):
             'salary_range': salary_range
         }
 
-        # return data or {}
-
 class Spider(scrapy.Spider):
     name = "example"
     google_cache_url = 'http://webcache.googleusercontent.com/search?q=cache:http://'
@@ -105,12 +103,14 @@ def start():
     process.start()
     import json
     import time
+    import requests
 
-    with open('save.json', 'w') as f:
-        for url in job_url:
-            data = parse(url)
-            json.dump(data, f)
-            time.sleep(5)
+    for url in job_url[1:]:
+        data = parse(url)
+        # send data to save
+        host_url = "http://localhost:8000/api/store"
+        requests.post(host_url, json=data)
+        time.sleep(5)
 
 if __name__ == '__main__':
     start()
