@@ -1,11 +1,12 @@
 from django.shortcuts import render
-# from .models import Post
+from post.models import Post
 from django.http import (
     HttpResponseRedirect, Http404,
     JsonResponse, HttpResponse
 )
 from django.views.decorators.csrf import csrf_exempt
-import json
+from .models import Searcher
+from .vector_space import Vocabulary
 
 
 def buildVS(request):
@@ -17,5 +18,12 @@ def buildVS(request):
         })
 
 def search(request):
+    docs = Post.objects.all()
+    vocab = Vocabulary.objects.all()[0].get()
+    searcher = Searcher(docs, vocab)
     query = request.GET.get('q')
+    if not query:
+        return HttpResponse("no query")
+    res = searcher.search(query)
+    print(res)
     return HttpResponse("ok")

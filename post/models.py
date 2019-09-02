@@ -44,5 +44,8 @@ class Post(models.Model):
         """
         set vector and save it
         """
-        self.vector = vector
+        self.vector = ','.join([str(_) for _ in vector])
         self.save()
+    
+    def get_vector(self):
+        return [int(_) for _ in self.vector.split(',')]

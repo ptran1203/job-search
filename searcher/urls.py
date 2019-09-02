@@ -4,7 +4,6 @@ from .apis import (
     search
 )
 
-
 app_name = "searcher"
 
 urlpatterns = [
