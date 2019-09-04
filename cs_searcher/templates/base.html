@@ -32,6 +32,7 @@
       </div>
     </div>
   </form>
+    <div class="jobs"></div>
     {% block content %}
     {% endblock content %}
   </div>
@@ -52,16 +53,39 @@
       $('.js-clearSearchBox').css('opacity', '0')
     })
 
+    function formatData(item) {
+      return `
+      <li class="list-group-item">
+        <strong style="display: block">
+        <a href="${item.post_url}" target="blank">${item.title}</a>
+        </strong>
+        <p>${item.content.slice(0, 50)}</p>
+      </li>
+      `
+    }
     // Ajax get search data
     $('#search-form').on('submit', function(e) {
       e.preventDefault()
-      let query = $('.js-searchBox-input').val()
+      let inputBox = $('.js-searchBox-input'),
+        instance = $(".jobs"),
+        query = inputBox.val()
       
       $.ajax({
         url : '/api/search?q=' + query,
         method : "GET",
+        beforeSend: function() {
+          instance.addClass("spinner")
+        },
         success : function(data){
-          console.log(data);
+          instance.removeClass("spinner")
+          let html = data.reduce((acc, item) => {
+            acc += formatData(item.fields)
+            return acc
+          }, '')
+
+          instance.append(html)
+          // Set default
+          inputBox.val('')
         },
         error: function(error){
           console.log(error)
