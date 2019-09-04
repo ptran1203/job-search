@@ -16,12 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from django.conf.urls import include
+from .views import (
+    top_page
+)
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
+apis = [
     path('api/', include('post.urls', namespace='crawler')),
     path('api/', include('searcher.urls')),
 ]
+
+pages = [
+    path('admin/', admin.site.urls),
+    path('', top_page),
+]
+
+urlpatterns = pages + apis
 
 # start scheduler here
 

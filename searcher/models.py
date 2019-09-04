@@ -8,8 +8,8 @@ class Searcher:
 
     def init_vector(self, q):
         terms = utils.norm_text(q).split(" ")
+        print(terms)
         vector = [0] * len(self.vocab)
-        print(self.vocab)
         for term in terms:
             try:
                  vector[self.vocab.index(term)] += 1
@@ -25,5 +25,6 @@ class Searcher:
         for doc in self.docs:
             res[doc.id] = utils.cosine(doc.get_vector(), qvector)
 
-        print(res)
+        doc_ids = sorted(res.items(), key=lambda kv: kv[1])
+        return [doc[0] for doc in doc_ids]
 

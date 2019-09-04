@@ -1,0 +1,81 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>Jsearcher</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="shortcut icon" href="/media/favicon.ico"> -->
+  <link 
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <link rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+  <!-- new -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400|Roboto:300,400,500">
+  <link rel="stylesheet" href="{% static 'css/search.css' %}"/>
+</head>
+<body>
+  <div id="pages">
+  <form id="search-form">
+    <h1>Search for job</h1>
+    <div class="searchBox-fakeInput">
+      <div class="searchBox-inputWrapper searchBox-inputWrapper_bordered">
+        <input type="text"
+               placeholder="type skill or ..."
+               class="form-control searchBox-input js-searchBox-input">
+      </div>
+      <div class="searchBox-clearWrapper">
+        <span class="searchBox-clear js-clearSearchBox"><button>Go</button></span>
+      </div>
+    </div>
+  </form>
+    {% block content %}
+    {% endblock content %}
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+  jQuery(document).ready(function() {
+    $('.js-clearSearchBox').css('opacity', '0')
+    $('.js-searchBox-input').keyup(function() {
+      if ($(this).val() !='' ) {
+        $('.js-clearSearchBox').css('opacity', '1')
+      } else {
+        $('.js-clearSearchBox').css('opacity', '0')
+      }
+    })
+    // click the button 
+    $('.js-clearSearchBox').click(function() {
+      $('.js-searchBox-input').focus()
+      $('.js-clearSearchBox').css('opacity', '0')
+    })
+
+    // Ajax get search data
+    $('#search-form').on('submit', function(e) {
+      e.preventDefault()
+      let query = $('.js-searchBox-input').val()
+      
+      $.ajax({
+        url : '/api/search?q=' + query,
+        method : "GET",
+        success : function(data){
+          console.log(data);
+        },
+        error: function(error){
+          console.log(error)
+        }
+      })
+    })
+  })
+  </script>
+
+</body>
+<footer class="page-footer font-small blue">
+    <div class="footer-copyright text-center py-3">© 2019
+      <a href="/">Jsearcher</a> | 
+      <a class="white" href="/about">About</a>
+    </div>
+</footer>
+</html>

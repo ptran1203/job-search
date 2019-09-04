@@ -38,7 +38,7 @@ class Post(models.Model):
         return self.create_date.date()
 
     def get_text(self):
-        return self.title + self.content
+        return self.title + self.content + self.salary_range
 
     def set_vector(self, vector):
         """

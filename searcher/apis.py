@@ -7,7 +7,7 @@ from django.http import (
 from django.views.decorators.csrf import csrf_exempt
 from .models import Searcher
 from .vector_space import Vocabulary
-
+from django.core import serializers
 
 def buildVS(request):
     from .vector_space import VectorSpace
@@ -24,6 +24,17 @@ def search(request):
     query = request.GET.get('q')
     if not query:
         return HttpResponse("no query")
-    res = searcher.search(query)
-    print(res)
-    return HttpResponse("ok")
+    doc_ids = searcher.search(query)
+    docs = Post.objects.filter(pk__in=doc_ids)
+    return HttpResponse(
+        serializers.serialize('json', sort_docs(docs, doc_ids)),
+        content_type="application/json")
+
+## helper
+
+def sort_docs(docs, ids):
+    """
+    sort docs by ids
+    """
+    doc_map = {doc.id: doc for doc in docs}
+    return [doc_map[id] for id in ids]

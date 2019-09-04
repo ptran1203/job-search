@@ -15,4 +15,3 @@ def store_post(request):
     data = json.loads(request.body.decode('utf8'))
     Post.create(data)
     return HttpResponse("Ok")
-
