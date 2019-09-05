@@ -37,4 +37,15 @@ def sort_docs(docs, ids):
     sort docs by ids
     """
     doc_map = {doc.id: doc for doc in docs}
+    for doc in docs:
+        doc.title = color_matches(query, doc.title.lower())
+        doc.content = color_matches(query, doc.content.lower())
+        doc_map[doc.id] = doc
     return [doc_map[id] for id in ids]
+
+def color_matches(query, text):
+    query = query.lower()
+    return text.replace(query, color_style(query))
+
+def color_style(word):
+    return '<span style="color:green">' + word + '</span>'

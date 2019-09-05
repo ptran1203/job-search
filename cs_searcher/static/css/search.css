@@ -137,6 +137,7 @@ div.more .close {
   padding: 15px;
   display: flex;
   position: relative;
+  margin: 5px;
 }
 .search-result.new-job {
   border-left: 5px solid #fd8925;
