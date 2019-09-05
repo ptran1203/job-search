@@ -98,3 +98,103 @@ button {
 @-webkit-keyframes spin {
   to { -webkit-transform: rotate(360deg); }
 }
+
+
+h2, p, div {
+    margin: 0;
+    padding: 0;
+  }
+  
+  h2 {
+    font-weight: bold;
+  }
+  
+  div.more {
+    display: none;
+    margin: 10px 0 0 0;
+    padding: 10px;
+    background-color: #eee;
+    position: relative;
+  }
+  div.more.visible {
+    display: block;
+  }
+  div.more li {
+    list-style: none;
+    line-height: 1.4em;
+    font-size: 90%;
+  }
+  div.more .close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    color: #c0c7d4;
+    cursor: pointer;
+  }
+  
+  .search-result {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 15px;
+    display: flex;
+    position: relative;
+  }
+  .search-result.new-job {
+    border-left: 5px solid #fd8925;
+  }
+  .search-result.new-job .badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    border: 2px solid #fd8925;
+    background-color: rgba(253, 137, 37, 0.2);
+    color: #fd8925;
+  }
+  .search-result h2 {
+    color: #288cfc;
+  }
+  .search-result a {
+    text-decoration: none;
+    color: #248afa;
+  }
+  .search-result .icon {
+    margin: 0 15px 0 0;
+  }
+  .search-result .reviews {
+    color: #fd8925;
+  }
+  .search-result .actions {
+    color: #c0c7d4;
+    margin-top: 10px;
+    font-size: 90%;
+  }
+  .search-result span {
+    margin-right: 10px;
+  }
+  .search-result div > div p {
+    color: #c0c7d4;
+    margin-top: 10px;
+  }
+  .search-result .company, .search-result .stars, .search-result .reviews {
+    font-size: 110%;
+    margin-right: 0 !important;
+    margin-top: 5px !important;
+  }
+  .search-result .stars {
+    position: relative;
+    display: inline-block;
+    height: 16px;
+    width: 86px;
+    background: url(https://www.indeed.com/cmp/_s/s/40b77a6/5stars_lg.png) 0px 33px;
+    background-size: 85px 32px;
+  }
+  .search-result .stars-inner {
+    display: inline-block;
+    height: 16px;
+    width: 86px;
+    background: url(https://www.indeed.com/cmp/_s/s/40b77a6/5stars_lg.png) 0 17px;
+    background-size: 85px 32px;
+  }
+  

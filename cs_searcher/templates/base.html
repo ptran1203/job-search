@@ -32,74 +32,19 @@
       </div>
     </div>
   </form>
-    <div class="jobs"></div>
     {% block content %}
     {% endblock content %}
   </div>
+  <div class="jobs">
+  </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script>
-  jQuery(document).ready(function() {
-    $('.js-clearSearchBox').css('opacity', '0')
-    $('.js-searchBox-input').keyup(function() {
-      if ($(this).val() !='' ) {
-        $('.js-clearSearchBox').css('opacity', '1')
-      } else {
-        $('.js-clearSearchBox').css('opacity', '0')
-      }
-    })
-    // click the button 
-    $('.js-clearSearchBox').click(function() {
-      $('.js-searchBox-input').focus()
-      $('.js-clearSearchBox').css('opacity', '0')
-    })
-
-    function formatData(item) {
-      return `
-      <li class="list-group-item">
-        <strong style="display: block">
-        <a href="${item.post_url}" target="blank">${item.title}</a>
-        </strong>
-        <p>${item.content.slice(0, 50)}</p>
-      </li>
-      `
-    }
-    // Ajax get search data
-    $('#search-form').on('submit', function(e) {
-      e.preventDefault()
-      let inputBox = $('.js-searchBox-input'),
-        instance = $(".jobs"),
-        query = inputBox.val()
-      
-      $.ajax({
-        url : '/api/search?q=' + query,
-        method : "GET",
-        beforeSend: function() {
-          instance.addClass("spinner")
-        },
-        success : function(data){
-          instance.removeClass("spinner")
-          let html = data.reduce((acc, item) => {
-            acc += formatData(item.fields)
-            return acc
-          }, '')
-
-          instance.append(html)
-          // Set default
-          inputBox.val('')
-        },
-        error: function(error){
-          console.log(error)
-        }
-      })
-    })
-  })
-  </script>
+  <script src="{% static 'js/search.js' %}"></script>
 
 </body>
-<footer class="page-footer font-small blue">
+<!-- <footer class="page-footer font-small blue">
     <div class="footer-copyright text-center py-3">© 2019
       <a href="/">Jsearcher</a> | 
       <a class="white" href="/about">About</a>
     </div>
-</footer>
+</footer> -->
 </html>
