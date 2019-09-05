@@ -10,6 +10,9 @@ class Vocabulary(models.Model):
 
     def get(self):
         return self.data.split(',')
+    
+    def __str__(self):
+        return 'data'
 
 
 class VectorSpace:
@@ -61,5 +64,6 @@ class VectorSpace:
         for post in posts:
             post.set_vector(post_map[post.id])
 
+        Vocabulary.objects.all().delete()
         Vocabulary.objects.create(data=','.join(vocab))
         return len(post_map)
