@@ -3,10 +3,10 @@ template_map = {
     1: `
     <div class="search-result">
   <div class="icon">
-    <img src="#post_img#" width="60" />
+    <img src="#post_img#" width="100" />
   </div>
   <div class="content">
-    <h2><a href="#post_url#">#title#</a></h2>
+    <h3><a href="#post_url#">#title#</a></h3>
     <p>
       <span class="salary">#salary_range#</span>
     </p>
@@ -67,7 +67,7 @@ jQuery(document).ready(function() {
   $('#search-form').on('submit', function(e) {
     e.preventDefault()
     let inputBox = $('.js-searchBox-input'),
-      instance = $(".jobs"),
+      instance = $("#jobs"),
       query = inputBox.val()
     
     $.ajax({
