@@ -6,17 +6,23 @@ from django.http import (
 )
 from django.views.decorators.csrf import csrf_exempt
 from .models import Searcher, Keywords
-from .vector_space import Vocabulary
+from .vector_space import Vocabulary, VectorSpace
 from django.core import serializers
 from helper import common as commonHelper
 
 def buildVS(request):
-    from .vector_space import VectorSpace
-    V = VectorSpace()
-    return JsonResponse({
-        "status": "Done",
-        "size": V.size
-        })
+    try:
+        V = VectorSpace()
+        return JsonResponse({
+            "status": "Done",
+            "size": V.size
+            })
+    except:
+        return JsonResponse({
+            "status": "Error!",
+            "size": 0
+            })
+
 
 def search(request):
     docs = Post.objects.all()
