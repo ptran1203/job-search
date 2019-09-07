@@ -5,7 +5,7 @@ from django.http import (
     JsonResponse, HttpResponse
 )
 from django.views.decorators.csrf import csrf_exempt
-from .models import Searcher
+from .models import Searcher, Keywords
 from .vector_space import Vocabulary
 from django.core import serializers
 from helper import common as commonHelper
@@ -28,14 +28,23 @@ def search(request):
         return HttpResponse("no query")
 
     terms = commonHelper.cleaned_text(commonHelper.norm_text(query))
+
     doc_ids = searcher.search(terms)
-    print(terms)
     docs = Post.objects.filter(pk__in=doc_ids)
-    return HttpResponse(
-        serializers.serialize(
-            'json',
-            get_results(docs, doc_ids, terms)),
-            content_type="application/json")
+
+    upsert_keywords(terms)
+    # nothing found mark keywords not in collection
+    # if len(docs) == 0:
+    #     upsert_keywords(terms, 0)
+
+    return json_response(
+        get_results(docs, doc_ids, terms)
+    )
+
+def keywords(request):
+    return json_response(
+        Keywords.objects.all()
+    )
 
 ## helper
 
@@ -49,3 +58,24 @@ def get_results(docs, ids, terms):
         doc.content = commonHelper.color_matches_long(terms, doc.content)
         doc_map[doc.id] = doc
     return [doc_map[id] for id in ids]
+
+def upsert_keywords(terms):
+    for term in terms:
+        keyword, created = Keywords.objects.get_or_create(
+            word=term
+        )
+
+        # print(keyword, created)
+        # this is new keyword
+        if not created:
+            keyword.num_of_searches += 1
+            keyword.save()
+
+def json_response(data):
+    """
+    custom json response for models
+    """
+    return HttpResponse(
+        serializers.serialize('json', data),
+        content_type="application/json"
+    )

@@ -28,3 +28,18 @@ class Searcher:
         # print(doc_ids)
         return [doc[0] for doc in doc_ids if doc[1] > 0.0]
 
+
+class Keywords(models.Model):
+    """
+    Store user search key words
+
+    status_type:
+        0 -> not exist in vocabulary
+        1 -> exist in vocabulary
+    """ 
+    word = models.CharField(max_length=20)
+    num_of_searches = models.IntegerField(default=0)
+    status_type = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.word
