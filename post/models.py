@@ -52,3 +52,12 @@ class Post(models.Model):
     
     def get_vector(self):
         return [int(_) for _ in self.vector.split(',')]
+
+    def json_object(self):
+        return {
+            'title': self.title,
+            'content': self.content,
+            'post_img': self.post_img,
+            'salary_range': self.salary_range,
+            'post_url': self.post_url
+        }

@@ -166,9 +166,6 @@ div.more .close {
   margin-top: 10px;
   font-size: 90%;
 }
-.search-result span {
-  margin-right: 10px;
-}
 .search-result div > div p {
   color: #646464;
   margin-top: 10px;
@@ -178,4 +175,8 @@ div.more .close {
 }
 .search-result .content h4 {
   cursor: pointer;
+}
+.matched {
+  color: #ce5f19;
+  margin: 0;
 }

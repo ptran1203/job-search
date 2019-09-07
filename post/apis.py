@@ -15,3 +15,10 @@ def store_post(request):
     data = json.loads(request.body.decode('utf8'))
     Post.create(data)
     return HttpResponse("Ok")
+
+def detail(request, id):
+    """
+    Get data for specific post
+    """
+    post = Post.objects.get(pk=id)
+    return JsonResponse(post.json_object())

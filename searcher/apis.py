@@ -9,6 +9,7 @@ from .models import Searcher, Keywords
 from .vector_space import Vocabulary, VectorSpace
 from django.core import serializers
 from helper import common as commonHelper
+from helper import http as httpHelper
 
 def buildVS(request):
     try:
@@ -43,12 +44,12 @@ def search(request):
     # if len(docs) == 0:
     #     upsert_keywords(terms, 0)
 
-    return json_response(
+    return httpHelper.json_response(
         get_results(docs, doc_ids, terms)
     )
 
 def keywords(request):
-    return json_response(
+    return httpHelper.json_response(
         Keywords.objects.all()
     )
 
@@ -76,12 +77,3 @@ def upsert_keywords(terms):
         if not created:
             keyword.num_of_searches += 1
             keyword.save()
-
-def json_response(data):
-    """
-    custom json response for models
-    """
-    return HttpResponse(
-        serializers.serialize('json', data),
-        content_type="application/json"
-    )

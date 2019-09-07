@@ -6,13 +6,14 @@ template_map = {
     <img src="#post_img#" width="200" />
   </div>
   <div class="content">
-    <h4 id="jobtitle" docid="#docid#">#title#</h4>
+    <h4 id="jobtitle" onclick="viewDetail(#docid#)">#title#</h4>
     <a href="#post_url#">Goto page</a>
     <p>
       <span class="salary">#salary_range#</span>
     </p>
     <div>
       <p>#content#</p>
+      <p class="more-content">#more_content#</p>
     </div>
     <div class="actions">
       <span class="date">#post_date#</span>
@@ -21,21 +22,38 @@ template_map = {
     </div>
   </div>
 </div>
-    `
+    `,
+  2: `
+  <div>#word#<div>
+  `
 }
 
-function generate_html(item, templateId) {
-  let content = template_map[templateId] || ''
 
-  data = item.fields
+function generate_html(item, templateId) {
+  let content = template_map[templateId] || '',
+    data = item.fields
+
   data.docid = item.pk
-  data.content = data.content.slice(0, 200) + '....'
+  // data['more_content'] = data.content.slice(0, 200) + '....'
   Object.keys(data).map(record => {
     let key = '#' + record + '#'
     content = content.split(key).join(data[record])
   })
 
   return content
+}
+
+function viewDetail(pk) {
+  let instance = document.getElementById('detail')
+  console.log(instance);
+  const xhr = new XMLHttpRequest()
+  xhr.open('GET', '/api/post/' + pk)
+  xhr.onload = function () {
+    if (xhr.status == 200) {
+      console.log(xhr.response);
+    }
+  }
+  xhr.send()
 }
 
 /**
@@ -54,14 +72,6 @@ jQuery(document).ready(function() {
   $('.js-clearSearchBox').click(function() {
     $('.js-searchBox-input').focus()
     $('.js-clearSearchBox').css('opacity', '0')
-  })
-  // TODO: consider other solution
-  $(document).on('change', function() {
-    var myElement = document.getElementById("jobtitle");
-    console.log(myElement);
-    $('#jobtitle').on('click', function() {
-      console.log('gagaga');
-    })
   })
 
   // Ajax get search data

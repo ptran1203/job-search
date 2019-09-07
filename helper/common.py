@@ -4,7 +4,6 @@ import re
 from constant import common as commonConst 
 
 def cosine(v1, v2):
-    print(len(v1))
     return 1 - spatial.distance.cosine(v1, v2)
 
 def norm_text(text):
@@ -67,8 +66,8 @@ def color_matches(terms, text):
                 )
     return text
 
-def color_style(word, color='green'):
-    return '<span style="color:'+ color + ';margin:0">' + word + '</span>'
+def color_style(word):
+    return '<span class="matched">' + word + '</span>'
 
 def safe_index(index):
     if index <= 100:
