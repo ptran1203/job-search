@@ -3,10 +3,11 @@ template_map = {
     1: `
     <div class="search-result">
   <div class="icon">
-    <img src="#post_img#" width="100" />
+    <img src="#post_img#" width="200" />
   </div>
   <div class="content">
-    <h3><a href="#post_url#">#title#</a></h3>
+    <h4 id="jobtitle" docid="#docid#">#title#</h4>
+    <a href="#post_url#">Goto page</a>
     <p>
       <span class="salary">#salary_range#</span>
     </p>
@@ -23,10 +24,12 @@ template_map = {
     `
 }
 
-function generate_html(data, templateId) {
+function generate_html(item, templateId) {
   let content = template_map[templateId] || ''
 
-  data.content = data.content.slice(0, 70) + '....'
+  data = item.fields
+  data.docid = item.pk
+  data.content = data.content.slice(0, 200) + '....'
   Object.keys(data).map(record => {
     let key = '#' + record + '#'
     content = content.split(key).join(data[record])
@@ -39,6 +42,7 @@ function generate_html(data, templateId) {
  * Jquery
  */
 jQuery(document).ready(function() {
+  // Event handler
   $('.js-clearSearchBox').css('opacity', '0')
   $('.js-searchBox-input').keyup(function() {
     if ($(this).val() !='' ) {
@@ -47,22 +51,19 @@ jQuery(document).ready(function() {
       $('.js-clearSearchBox').css('opacity', '0')
     }
   })
-  // click the button 
   $('.js-clearSearchBox').click(function() {
     $('.js-searchBox-input').focus()
     $('.js-clearSearchBox').css('opacity', '0')
   })
+  // TODO: consider other solution
+  $(document).on('change', function() {
+    var myElement = document.getElementById("jobtitle");
+    console.log(myElement);
+    $('#jobtitle').on('click', function() {
+      console.log('gagaga');
+    })
+  })
 
-  function formatData(item) {
-    return `
-    <div>
-      <strong style="display: block">
-      <a href="${item.post_url}" target="blank">${item.title}</a>
-      </strong>
-      <p>${item.content.slice(0, 50)}</p>
-    </div>
-    `
-  }
   // Ajax get search data
   $('#search-form').on('submit', function(e) {
     e.preventDefault()
@@ -81,11 +82,13 @@ jQuery(document).ready(function() {
         instance.removeClass("spinner")
         let html = data.reduce((acc, item) => {
           // console.log(item.fields.pk);
-          acc += generate_html(item.fields, 1)
+          acc += generate_html(item, 1)
           return acc
         }, '')
 
         instance.append(html)
+        
+        $('#keywords').html(data.length + ' results: ' + query)
         // Set default
         inputBox.val('')
       },

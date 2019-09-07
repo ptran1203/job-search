@@ -2,7 +2,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #FFCC02;
+    background: #ffffff;
 }
 form {
     width: 30rem;
@@ -25,12 +25,12 @@ button {
 /* eof Generic styles */
 
 .searchBox-fakeInput {
-    background: #FFCC02;
+    background: rgb(255, 255, 255);
     border: none;
     display: table;
 }
 .searchBox-inputWrapper_bordered {
-    border: 5px solid #FFF;
+    border: 2px solid rgb(110, 110, 110);
 }
 .searchBox-inputWrapper,
 .searchBox-clearWrapper {
@@ -54,7 +54,7 @@ button {
 }
 
 .searchBox-input::-webkit-input-placeholder {
-    color: rgba(255,255,255,0.75);
+    color: rgba(112, 112, 112, 0.75);
 }
 
 .searchBox-input:focus::-webkit-input-placeholder {
@@ -132,6 +132,7 @@ div.more .close {
 }
 
 .search-result {
+  border-bottom: 1px solid;
   background-color: #fff;
   border-radius: 5px;
   padding: 15px;
@@ -166,7 +167,7 @@ div.more .close {
   color: #fd8925;
 }
 .search-result .actions {
-  color: #c0c7d4;
+  color: ;
   margin-top: 10px;
   font-size: 90%;
 }
@@ -174,10 +175,12 @@ div.more .close {
   margin-right: 10px;
 }
 .search-result div > div p {
-  color: #c0c7d4;
+  color: #646464;
   margin-top: 10px;
 }
 .search-result .salary {
   color: #fd8925;
 }
-
+.search-result .content h4 {
+  cursor: pointer;
+}

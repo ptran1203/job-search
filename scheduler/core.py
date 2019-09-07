@@ -23,7 +23,6 @@ def run_spider():
 
 def build_vectorspace():
     r = requests.get(HOST_URL + 'api/vectorspace')
-    print(r.text)
 
 # export
 def start_scheduler(time_interval=SIX_HOURS):

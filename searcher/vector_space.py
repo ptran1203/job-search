@@ -1,7 +1,7 @@
 from post.models import Post
-from helper.core import norm_text
+from helper.common import norm_text
 from django.db import models
-
+from helper import common as commonHelper
 import re
 
 # build vector space model
@@ -34,19 +34,9 @@ class VectorSpace:
         vocab = set()
         for post in posts:
             [vocab.add(_) for _ in \
-                self._split(norm_text(post.get_text()))]
+                commonHelper.cleaned_text(post.get_text())]
 
         return list(vocab), posts
-
-    @staticmethod
-    def _split(text):
-        """
-        split string into characters
-        """
-        return [ _ for _ in re.split(
-            r'[^\w]',
-            text.strip()) 
-            if _ != '']
 
     def build(self, vocab, posts):
         """
@@ -55,7 +45,7 @@ class VectorSpace:
         """
         post_map = {p.id:[0]*len(vocab) for p in posts}
         for post in posts:
-            for word in self._split(norm_text(post.get_text())):
+            for word in commonHelper.cleaned_text(post.get_text()):
                 try:
                     post_map[post.id][vocab.index(word)] += 1
                 except KeyError:

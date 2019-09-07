@@ -2,9 +2,21 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block content %}
-<link rel="stylesheet" href="/static/css/common/animation.css"/>
 <div class="container">
-    <div id="jobs">
+    <div id="keywords"></div>
+    <div class="result">
+        <div id="jobs"></div>
+        <div id="detail"></div>
     </div>
 </div>
+
+<style>
+.result {
+    display: flex;
+}
+.result #jobs {
+    width: 80%;
+}
+
+</style>
 {% endblock content %}
