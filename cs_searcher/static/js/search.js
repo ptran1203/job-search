@@ -24,16 +24,24 @@ template_map = {
 </div>
     `,
   2: `
-  <div>#word#<div>
+  <div class="title">
+    <img src="#post_img#" width="200" />
+    <h4>#title#</h4>
+  </div>
+  <div>
+    #content#
+    #salary_range#
+    <a href="#post_url#">goto page</a>
+  </div>
   `
 }
 
-
 function generate_html(item, templateId) {
   let content = template_map[templateId] || '',
-    data = item.fields
+    data = item.fields || item
 
-  data.docid = item.pk
+  if(item.pk)
+    data.docid = item.pk
   // data['more_content'] = data.content.slice(0, 200) + '....'
   Object.keys(data).map(record => {
     let key = '#' + record + '#'
@@ -44,13 +52,14 @@ function generate_html(item, templateId) {
 }
 
 function viewDetail(pk) {
-  let instance = document.getElementById('detail')
-  console.log(instance);
+  // console.log(instance);
   const xhr = new XMLHttpRequest()
   xhr.open('GET', '/api/post/' + pk)
   xhr.onload = function () {
     if (xhr.status == 200) {
-      console.log(xhr.response);
+      // console.log(xhr.response);
+      document.getElementById('detail')
+        .innerHTML = generate_html(JSON.parse(xhr.response), 2)
     }
   }
   xhr.send()

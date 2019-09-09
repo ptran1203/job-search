@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 from bs4 import BeautifulSoup as bs
 from requests import get
+from helper import common as commonHelper
 
 # Create your models here.
 class Post(models.Model):
@@ -53,10 +54,14 @@ class Post(models.Model):
     def get_vector(self):
         return [int(_) for _ in self.vector.split(',')]
 
-    def json_object(self):
+    def json_object(self, **kwargs):
+        content = self.content if \
+                not kwargs['is_html'] else \
+                commonHelper.split_content(self.content)
         return {
+            'id': self.pk,
             'title': self.title,
-            'content': self.content,
+            'content': content,
             'post_img': self.post_img,
             'salary_range': self.salary_range,
             'post_url': self.post_url
