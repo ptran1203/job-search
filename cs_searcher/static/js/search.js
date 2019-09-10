@@ -1,5 +1,5 @@
 
-template_map = {
+const template_map = {
     1: `
     <div class="search-result">
   <div class="icon">
@@ -36,6 +36,8 @@ template_map = {
   `
 }
 
+let keywords = []
+
 function generate_html(item, templateId) {
   let content = template_map[templateId] || '',
     data = item.fields || item
@@ -57,7 +59,6 @@ function viewDetail(pk) {
   xhr.open('GET', '/api/post/' + pk)
   xhr.onload = function () {
     if (xhr.status == 200) {
-      // console.log(xhr.response);
       document.getElementById('detail')
         .innerHTML = generate_html(JSON.parse(xhr.response), 2)
     }
@@ -69,6 +70,36 @@ function viewDetail(pk) {
  * Jquery
  */
 jQuery(document).ready(function() {
+  // get keywords in DB
+  $.ajax({
+    url : '/api/keywords',
+    method : "GET",
+    success : function(data){
+      keywords = data
+      $('input:text').attr('placeholder',`search for xx jobs`);
+    },
+    error: function(error){
+      console.log(error)
+    }
+  })
+
+  $('input[name=search]').on('input', function() {
+    let ulTag = $('#autocomplete')
+      ulTag.html('')
+
+    let self = $('input[name=search]'),
+      words = keywords.map(item => item.word),
+      matches = words.filter(word => word.includes(self.val()))
+
+    if (self.val()) {
+      matches.forEach(function(word) {
+        ulTag.append(`<li>${word}</li>`)
+      })
+    } else {
+      ulTag.html('')
+    }
+  })
+
   // Event handler
   $('.js-clearSearchBox').css('opacity', '0')
   $('.js-searchBox-input').keyup(function() {

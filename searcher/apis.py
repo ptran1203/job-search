@@ -49,9 +49,17 @@ def search(request):
     )
 
 def keywords(request):
-    return httpHelper.json_response(
-        Keywords.objects.all()
-    )
+    is_string = request.GET.get('is_string')
+    query_set = Keywords.objects.all()
+    if not is_string:
+        return JsonResponse([
+            item.json_object() for item in query_set
+        ], safe=False)
+    return JsonResponse([
+        item.word for item in query_set
+    ], safe=False)
+
+
 
 ## helper
 

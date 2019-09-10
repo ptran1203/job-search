@@ -43,3 +43,11 @@ class Keywords(models.Model):
 
     def __str__(self):
         return self.word
+
+    def json_object(self):
+        return {
+            'id': self.pk,
+            'word': self.word,
+            'num_of_searches': self.num_of_searches,
+            'status_type': self.status_type
+        }
