@@ -19,16 +19,19 @@
 </head>
 <body>
   <div id="pages">
-    <form id="search-form">
+    <form id="search-form" autocomplete="new-password">
       <!-- <h1>Search for job</h1> -->
       <div class="searchBox-fakeInput">
         <div class="searchBox-inputWrapper searchBox-inputWrapper_bordered">
+          <input type="text" style="display:none">
+          <input type="password" style="display:none">
           <input type="text"
                 name="search"
                 placeholder="type skill or something..."
-                class="form-control searchBox-input js-searchBox-input">
+                class="form-control searchBox-input js-searchBox-input"
+                autocomplete="none">
+          <ul id="autocomplete"></ul>
         </div>
-        <ul id="autocomplete"></ul>
         <div class="searchBox-clearWrapper">
           <span class="searchBox-clear js-clearSearchBox"><button>Go</button></span>
         </div>

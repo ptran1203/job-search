@@ -3,11 +3,13 @@ from django.urls import path, re_path
 from .apis import(
     store_post,
     detail,
+    count,
 )
 
 app_name = "post"
 
 urlpatterns = [
     path('store', store_post),
-    path('post/<id>', detail)
+    path('post/<id>', detail),
+    path('count', count)
 ]

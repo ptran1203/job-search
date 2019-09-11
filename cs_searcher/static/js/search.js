@@ -76,7 +76,18 @@ jQuery(document).ready(function() {
     method : "GET",
     success : function(data){
       keywords = data
-      $('input:text').attr('placeholder',`search for xx jobs`);
+    },
+    error: function(error){
+      console.log(error)
+    }
+  })
+
+  $.ajax({
+    url : '/api/count',
+    method : "GET",
+    success : function(data){
+      keywords = data
+      $('input:text').attr('placeholder',`search for ${data.count || 0} jobs`);
     },
     error: function(error){
       console.log(error)

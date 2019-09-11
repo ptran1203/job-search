@@ -60,7 +60,6 @@ def keywords(request):
     ], safe=False)
 
 
-
 ## helper
 
 def get_results(docs, ids, terms):

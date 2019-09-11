@@ -22,3 +22,9 @@ def detail(request, id):
     """
     post = Post.objects.get(pk=id)
     return JsonResponse(post.json_object(is_html=True))
+
+def count(request):
+    """
+    Count item in DB
+    """
+    return JsonResponse({'count': Post.objects.count()})

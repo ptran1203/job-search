@@ -180,3 +180,9 @@ div.more .close {
   color: #ce5f19;
   margin: 0;
 }
+#autocomplete {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
