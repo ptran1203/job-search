@@ -94,22 +94,24 @@ jQuery(document).ready(function() {
     }
   })
 
-  $('input[name=search]').on('input', function() {
-    let ulTag = $('#autocomplete')
-      ulTag.html('')
 
-    let self = $('input[name=search]'),
-      words = keywords.map(item => item.word),
-      matches = words.filter(word => word.includes(self.val()))
+  // TODO: fix later
+  // $('input[name=search]').on('input', function() {
+  //   let ulTag = $('#autocomplete')
+  //     ulTag.html('')
 
-    if (self.val()) {
-      matches.forEach(function(word) {
-        ulTag.append(`<li>${word}</li>`)
-      })
-    } else {
-      ulTag.html('')
-    }
-  })
+  //   let self = $('input[name=search]'),
+  //     words = keywords.map(item => item.word),
+  //     matches = words.filter(word => word.includes(self.val()))
+
+  //   if (self.val()) {
+  //     matches.forEach(function(word) {
+  //       ulTag.append(`<li>${word}</li>`)
+  //     })
+  //   } else {
+  //     ulTag.html('')
+  //   }
+  // })
 
   // Event handler
   $('.js-clearSearchBox').css('opacity', '0')
