@@ -33,6 +33,27 @@ const template_map = {
     #salary_range#
     <a href="#post_url#">goto page</a>
   </div>
+  `,
+  3: `
+  <div class="modal-dialog">
+    <div class="modal-header">
+    <h2>#title#</h2>
+    <a 
+      href="#"
+      class="btn-close closemodale"
+      aria-hidden="true">
+      &times;
+    </a>
+    </div>
+    <div class="modal-body">
+        <img src="#post_img#" width="200" />
+        <div>#salary_range#</div>
+        <div>#content#</div>
+    </div>
+    <div class="modal-footer">
+        <a href="#post_url#" class="btn" id="btn_ingresar">Appy</a>
+    </div>
+  </div>
   `
 }
 
@@ -60,7 +81,7 @@ function viewDetail(pk) {
   xhr.onload = function () {
     if (xhr.status == 200) {
       document.getElementById('detail')
-        .innerHTML = generate_html(JSON.parse(xhr.response), 2)
+        .innerHTML = generate_html(JSON.parse(xhr.response), 3)
     }
   }
   xhr.send()
@@ -70,6 +91,14 @@ function viewDetail(pk) {
  * Jquery
  */
 jQuery(document).ready(function() {
+  $('.openmodale').click(function (e) {
+    e.preventDefault();
+    $('.modale').addClass('opened');
+});
+  $('.closemodale').click(function (e) {
+    e.preventDefault();
+    $('.modale').removeClass('opened');
+});
   // get keywords in DB
   $.ajax({
     url : '/api/keywords',
