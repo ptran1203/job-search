@@ -1,12 +1,12 @@
 
 const template_map = {
     1: `
-    <div class="search-result">
+    <div class="search-result" onclick="viewDetail(this,#docid#)">
   <div class="icon">
     <img src="#post_img#" width="200" />
   </div>
   <div class="content">
-    <h4 id="jobtitle" onclick="viewDetail(this,#docid#)">#title#</h4>
+    <h4 id="jobtitle">#title#</h4>
     <a href="#post_url#">Goto page</a>
     <p>
       <span class="salary">#salary_range#</span>
@@ -37,7 +37,7 @@ const template_map = {
   3: `
   <div class="modal-dialog">
     <div class="modal-header">
-    <h2>#title#</h2>
+    <h4>#title#</h4>
     <a 
       href="#"
       class="btn-close closemodale"
@@ -48,7 +48,7 @@ const template_map = {
     <div class="modal-body">
         <img src="#post_img#" width="200" />
         <div>#salary_range#</div>
-        <div>#content#</div>
+        <div class="job-desc">#content#</div>
     </div>
     <div class="modal-footer">
         <a href="#post_url#" class="btn" id="btn_ingresar">Appy</a>
@@ -58,6 +58,7 @@ const template_map = {
 }
 
 let keywords = []
+let offset = parseInt($("#detail").css('top'))
 
 function generate_html(item, templateId) {
   let content = template_map[templateId] || '',
@@ -76,8 +77,7 @@ function generate_html(item, templateId) {
 
 
 function activeElement(self) {
-  parentEle = self.parentElement.parentElement
-  let classList = parentEle.className.split(' '),
+  let classList = self.className.split(' '),
     activeEle = document.getElementsByClassName('active')
   
   activeEle = activeEle[0]
@@ -87,8 +87,7 @@ function activeElement(self) {
   // remove all pre-active element
 
   if (!classList.includes('active')) {
-    console.log(parentEle.className);
-    parentEle.className += ' active'
+    self.className += ' active'
   }
 }
 
@@ -99,6 +98,7 @@ function viewDetail(self, pk) {
     if (xhr.status == 200) {
       let ele = document.getElementById('detail')
       ele.innerHTML = generate_html(JSON.parse(xhr.response), 3)
+      ele.style.overflowY = 'scroll'
       if (!ele.className.split(' ').includes('opened')) {
         ele.className += ' opened'
       }

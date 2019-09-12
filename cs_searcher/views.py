@@ -16,3 +16,7 @@ def top_page(request):
         context={'docs':docs})
 
 
+def search(request):
+    query = request.GET.get('q')
+    
+

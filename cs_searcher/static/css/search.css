@@ -74,8 +74,6 @@ button {
 .searchBox-clearInput:hover {
     color: #AAA;
 }
-
-
 .spinner {
     /* margin: 0; */
     width: 100%;
@@ -116,11 +114,9 @@ h2, p, div {
   margin: 0;
   padding: 0;
 }
-
 h2 {
   font-weight: bold;
 }
-
 div.more {
   display: none;
   margin: 10px 0 0 0;
@@ -145,13 +141,13 @@ div.more .close {
 }
 
 .search-result {
-  border-bottom: 1px solid;
+  /* border-bottom: 1px solid; */
   background-color: #fff;
-  border-radius: 5px;
   padding: 15px;
   display: flex;
   position: relative;
   margin: 5px;
+  cursor: pointer;
 }
 .search-result.new-job {
   border-left: 5px solid #fd8925;
@@ -187,9 +183,6 @@ div.more .close {
 .search-result .salary {
   color: #fd8925;
 }
-.search-result .content h4 {
-  cursor: pointer;
-}
 .matched {
   color: #ce5f19;
   margin: 0;
@@ -201,13 +194,20 @@ div.more .close {
   list-style: none;
 }
 .active {
-  background-color: rgb(190, 184, 184);
+  /* border-top: 1px solid; */
+  /* border-bottom: 1px solid; */
+  background-color: rgb(224, 224, 224);
 }
 #detail {
+  /* overflow-y: scroll; */
   position: fixed;
-  right: 0;
-  top: 0;
+  height: 95%;
+  top: 30px;
 }
 #jobs {
   width: 70%;
+}
+.job-desc {
+  font-size: 14px;
+  line-height: 1.5;
 }
