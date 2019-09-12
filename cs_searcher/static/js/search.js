@@ -6,7 +6,7 @@ const template_map = {
     <img src="#post_img#" width="200" />
   </div>
   <div class="content">
-    <h4 id="jobtitle" onclick="viewDetail(#docid#)">#title#</h4>
+    <h4 id="jobtitle" onclick="viewDetail(this,#docid#)">#title#</h4>
     <a href="#post_url#">Goto page</a>
     <p>
       <span class="salary">#salary_range#</span>
@@ -74,14 +74,35 @@ function generate_html(item, templateId) {
   return content
 }
 
-function viewDetail(pk) {
-  // console.log(instance);
+
+function activeElement(self) {
+  parentEle = self.parentElement.parentElement
+  let classList = parentEle.className.split(' '),
+    activeEle = document.getElementsByClassName('active')
+  
+  activeEle = activeEle[0]
+  if (activeEle) {
+    activeEle.classList.remove("active")
+  }
+  // remove all pre-active element
+
+  if (!classList.includes('active')) {
+    console.log(parentEle.className);
+    parentEle.className += ' active'
+  }
+}
+
+function viewDetail(self, pk) {
   const xhr = new XMLHttpRequest()
   xhr.open('GET', '/api/post/' + pk)
   xhr.onload = function () {
     if (xhr.status == 200) {
-      document.getElementById('detail')
-        .innerHTML = generate_html(JSON.parse(xhr.response), 3)
+      let ele = document.getElementById('detail')
+      ele.innerHTML = generate_html(JSON.parse(xhr.response), 3)
+      if (!ele.className.split(' ').includes('opened')) {
+        ele.className += ' opened'
+      }
+      activeElement(self)
     }
   }
   xhr.send()
@@ -91,14 +112,6 @@ function viewDetail(pk) {
  * Jquery
  */
 jQuery(document).ready(function() {
-  $('.openmodale').click(function (e) {
-    e.preventDefault();
-    $('.modale').addClass('opened');
-});
-  $('.closemodale').click(function (e) {
-    e.preventDefault();
-    $('.modale').removeClass('opened');
-});
   // get keywords in DB
   $.ajax({
     url : '/api/keywords',
@@ -160,7 +173,7 @@ jQuery(document).ready(function() {
   $('#search-form').on('submit', function(e) {
     e.preventDefault()
     let inputBox = $('.js-searchBox-input'),
-      instance = $("#jobs"),
+      instance = $('#jobs'),
       query = inputBox.val()
     
     $.ajax({
@@ -168,10 +181,10 @@ jQuery(document).ready(function() {
       method : "GET",
       beforeSend: function() {
         instance.html('')
-        instance.addClass("spinner")
+        instance.addClass("bar")
       },
       success : function(data){
-        instance.removeClass("spinner")
+        instance.removeClass("bar")
         let html = data.reduce((acc, item) => {
           // console.log(item.fields.pk);
           acc += generate_html(item, 1)
