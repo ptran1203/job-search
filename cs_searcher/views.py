@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.core import serializers
 from django.shortcuts import redirect
 from post.models import Post
+from searcher.services import search_result
 
 def top_page(request):
     template_name = 'index.html'
@@ -16,7 +17,11 @@ def top_page(request):
         context={'docs':docs})
 
 
-def search(request):
+def search_view(request):
     query = request.GET.get('q')
-    
+    posts = search_result(query) if query else []
+    return render(
+        request, 'search.html',
+        context={'posts': posts}
+    )
 

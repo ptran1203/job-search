@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="container">
+  <div id="keywords"></div>
+  <div class="result">
+    <div id="left-side"></div>
+    <div id="jobs">
+      {% for post in posts %}
+        <div class="search-result" pk="{{ post.pk }}" onclick="viewDetail(this)">
+          <div class="icon">
+            <img src="{{ post.post_img }}" width="200" />
+          </div>
+          <div class="content">
+            <h4 id="jobtitle">{{ post.title }}</h4>
+            <a href="{{ post.post_url }}">Goto page</a>
+            <p>
+              <span class="salary">{{ post.salary_range }}</span>
+            </p>
+            <div>
+              <p>{{ post.content }}</p>
+            </div>
+            <div class="actions">
+              <span class="date">{{ post.post_date }}</span>
+              <span class="save"><a href="/save">save job</a></span>
+              <span class="email"><a href="/email">email</a></span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div><div id="detail" class="scrollbar"></div></div>
+  </div>
+</div>
+<style>
+.result {
+    display: flex;
+    justify-content: inherit;
+}
+</style>
+{% endblock content %}

@@ -1,7 +1,7 @@
 
 const template_map = {
     1: `
-    <div class="search-result" onclick="viewDetail(this,#docid#)">
+    <div class="search-result" pk="#docid#" onclick="viewDetail(this)">
   <div class="icon">
     <img src="#post_img#" width="200" />
   </div>
@@ -91,8 +91,10 @@ function activeElement(self) {
   }
 }
 
-function viewDetail(self, pk) {
+function viewDetail(self) {
   const xhr = new XMLHttpRequest()
+  const pk = self.getAttribute('pk')
+
   xhr.open('GET', '/api/post/' + pk)
   xhr.onload = function () {
     if (xhr.status == 200) {

@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.conf.urls import include
 from .views import (
-    top_page
+    top_page,
+    search_view,
 )
 
 apis = [
@@ -28,6 +29,7 @@ apis = [
 pages = [
     path('admin/', admin.site.urls),
     path('', top_page),
+    path('search', search_view),
 ]
 
 urlpatterns = pages + apis
