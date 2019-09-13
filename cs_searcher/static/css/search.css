@@ -98,6 +98,8 @@ button {
   height: 6px;
   border-radius: 2px;
   background-color: #4b9cdb;
+  text-align: center;
+
 }
 .bar {animation: loadingJ 2s cubic-bezier(.17,.37,.43,.67) infinite;}
 
@@ -198,7 +200,7 @@ div.more .close {
   /* border-bottom: 1px solid; */
   background-color: rgb(224, 224, 224);
 }
-#detail {
+.detail {
   /* overflow-y: scroll; */
   position: fixed;
   height: 95%;

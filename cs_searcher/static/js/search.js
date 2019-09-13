@@ -92,15 +92,22 @@ function activeElement(self) {
 }
 
 function viewDetail(self) {
+  let ele = document.getElementById('detail')
+  // beforsend
+  ele.className += ' bar'
+  ele.classList.remove('detail')
+
   const xhr = new XMLHttpRequest()
   const pk = self.getAttribute('pk')
 
   xhr.open('GET', '/api/post/' + pk)
   xhr.onload = function () {
     if (xhr.status == 200) {
-      let ele = document.getElementById('detail')
+      
+      ele.className += ' detail'
       ele.innerHTML = generate_html(JSON.parse(xhr.response), 3)
       ele.style.overflowY = 'scroll'
+      ele.classList.remove('bar')
       if (!ele.className.split(' ').includes('opened')) {
         ele.className += ' opened'
       }
