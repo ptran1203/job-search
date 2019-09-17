@@ -31,7 +31,7 @@ def search(request):
     if not query:
         return HttpResponse("no query")
 
-    return httpHelper.json_response(search_result(query))
+    return JsonResponse(search_result(query), safe=False)
 
 def keywords(request):
     is_string = request.GET.get('is_string')
@@ -43,6 +43,3 @@ def keywords(request):
     return JsonResponse([
         item.word for item in query_set
     ], safe=False)
-
-
-## helper

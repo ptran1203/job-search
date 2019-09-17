@@ -24,11 +24,13 @@ def get_results(docs, ids, terms):
     """
     get docs by ids
     """
-    doc_map = {doc.id: doc for doc in docs}
+    doc_map = {}
     for doc in docs:
-        doc.title = commonHelper.color_matches(terms, doc.title)
-        doc.content = commonHelper.color_matches_long(terms, doc.content)
-        doc_map[doc.id] = doc
+        doc_obj = doc.json_object(is_html=True)
+        doc_obj['title'] = commonHelper.color_matches(terms, doc.title)
+        doc_obj['content'] = commonHelper.color_matches_long(terms,
+                doc.content)
+        doc_map[doc.id] = doc_obj
     return [doc_map[id] for id in ids]
 
 
@@ -37,8 +39,6 @@ def upsert_keywords(terms):
         keyword, created = Keywords.objects.get_or_create(
             word=term
         )
-
-        # print(keyword, created)
         # this is new keyword
         if not created:
             keyword.num_of_searches += 1

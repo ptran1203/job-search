@@ -76,7 +76,7 @@ def safe_index(index):
 
 def split_content(text):
     new_text = '<p>' + re.sub(
-        r'[/\n/\t-]', '</p><p> -',
+        r'[^\w+\s\,\:]', '</p><p> -',
         text) + '</p>'
     
     return new_text.replace('<p> -</p>', '')

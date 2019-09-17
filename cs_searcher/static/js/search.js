@@ -1,7 +1,7 @@
 
 const template_map = {
-    1: `
-    <div class="search-result" pk="#docid#" onclick="viewDetail(this)">
+    1: `d
+    <div class="search-result" pk="#id#" onclick="viewDetail(this)">
   <div class="icon">
     <img src="#post_img#" width="200" />
   </div>
@@ -13,7 +13,6 @@ const template_map = {
     </p>
     <div>
       <p>#content#</p>
-      <p class="more-content">#more_content#</p>
     </div>
     <div class="actions">
       <span class="date">#post_date#</span>
@@ -23,21 +22,10 @@ const template_map = {
   </div>
 </div>
     `,
-  2: `
-  <div class="title">
-    <img src="#post_img#" width="200" />
-    <h4>#title#</h4>
-  </div>
-  <div>
-    #content#
-    #salary_range#
-    <a href="#post_url#">goto page</a>
-  </div>
-  `,
   3: `
   <div class="modal-dialog">
     <div class="modal-header">
-    <h4>#title#</h4>
+    <h4><a href="#post_url#">#title#</a></h4>
     <a 
       href="#"
       class="btn-close closemodale"
@@ -46,9 +34,9 @@ const template_map = {
     </a>
     </div>
     <div class="modal-body">
-        <img src="#post_img#" width="200" />
-        <div>#salary_range#</div>
-        <div class="job-desc">#content#</div>
+        <img src="#post_img#" width="200" style="display:block"/>
+        <div class="far fa-money-bill-alt">  <span style="color:#fd8925">#salary_range#</span></div>
+        <div class="job-desc" style="white-space: pre-line">#content#</div>
     </div>
     <div class="modal-footer">
         <a href="#post_url#" class="btn" id="btn_ingresar">Appy</a>
@@ -58,15 +46,9 @@ const template_map = {
 }
 
 let keywords = []
-let offset = parseInt($("#detail").css('top'))
 
-function generate_html(item, templateId) {
-  let content = template_map[templateId] || '',
-    data = item.fields || item
-
-  if(item.pk)
-    data.docid = item.pk
-  // data['more_content'] = data.content.slice(0, 200) + '....'
+function generate_html(data, templateId) {
+  let content = template_map[templateId] || ''
   Object.keys(data).map(record => {
     let key = '#' + record + '#'
     content = content.split(key).join(data[record])
@@ -75,11 +57,10 @@ function generate_html(item, templateId) {
   return content
 }
 
-
 function activeElement(self) {
   let classList = self.className.split(' '),
     activeEle = document.getElementsByClassName('active')
-  
+
   activeEle = activeEle[0]
   if (activeEle) {
     activeEle.classList.remove("active")
@@ -103,7 +84,6 @@ function viewDetail(self) {
   xhr.open('GET', '/api/post/' + pk)
   xhr.onload = function () {
     if (xhr.status == 200) {
-      
       ele.className += ' detail'
       ele.innerHTML = generate_html(JSON.parse(xhr.response), 3)
       ele.style.overflowY = 'scroll'
