@@ -179,7 +179,7 @@ jQuery(document).ready(function() {
   })
 
   // Ajax get search data
-  $('#search-form').on('submit', function(e) {
+  $('#search-forms').on('submit', function(e) {
     e.preventDefault()
     let inputBox = $('.js-searchBox-input'),
       instance = $('#jobs'),

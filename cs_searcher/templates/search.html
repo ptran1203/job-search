@@ -13,13 +13,13 @@
             <img src="{{ post.post_img }}" width="200" />
           </div>
           <div class="content">
-            <h4 id="jobtitle">{{ post.title }}</h4>
+            <h4 id="jobtitle">{{ post.title | safe }}</h4>
             <a href="{{ post.post_url }}">Goto page</a>
             <p>
               <span class="salary">{{ post.salary_range }}</span>
             </p>
             <div>
-              <p>{{ post.content }}</p>
+              <p>{{ post.content | safe }}</p>
             </div>
             <div class="actions">
               <span class="date">{{ post.post_date }}</span>
