@@ -26,7 +26,7 @@ class Post(models.Model):
         Create new post and save
         """
         # prevent duplicate
-        if objects.filter(title = obj['title'][:255]).exists():
+        if cls.objects.filter(title = obj['title'][:255]).exists():
             return
         new = cls(
             title = obj['title'][:255],
