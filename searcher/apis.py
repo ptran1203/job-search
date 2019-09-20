@@ -5,8 +5,7 @@ from django.http import (
     JsonResponse, HttpResponse
 )
 from django.views.decorators.csrf import csrf_exempt
-from .models import Keywords
-from .vector_space import VectorSpace
+from .models import Keywords, VectorSpace
 from django.core import serializers
 from helper import http as httpHelper
 from .services import search_result

@@ -3,6 +3,10 @@ import requests
 from scrapy.crawler import CrawlerProcess
 from bs4 import BeautifulSoup
 from random import randrange
+import asyncio
+import json
+import time
+import requests
 
 user_agents = [
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36',
@@ -10,8 +14,15 @@ user_agents = [
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36',
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
 ]
-
+disallow_path = ['/blog/', '/cong-ty/', '/city/']
 job_url = []
+max_deep = 3
+crawled = []
+host_url = "http://localhost:8000/api/store"
+
+
+def absolute_url(url):
+    return url if 'http' in url else 'http://itviec.com' + url
 
 def extract_url(item):
     atag = item.find('a')
@@ -25,43 +36,58 @@ def extract_img(item):
         return img.get('src')
     return 'https://aliceasmartialarts.com/wp-content/uploads/2017/04/default-image.jpg'
 
+def is_accept_url(url):
+    return '/viec-lam-it/' in url and not \
+        any(_ in url for _ in disallow_path)
 
 def rand_headers():
     return {
         'User-Agent': user_agents[randrange(len(user_agents))]
     }
 
-def parse(url):
+def bsfind(soup, tag, classes):
+    return (soup.find(tag, classes) or {}).text or ''
+
+async def handle(url, deep=0):
         """
         Parse detail
         """
+        time.sleep(2)
+        if (deep >= max_deep):
+            return
+
         r =  requests.get(url, headers=rand_headers())
         r.encoding = 'utf-8'
         soup = BeautifulSoup(r.text, 'html.parser')
-        item = soup.find('div', ['job-detail-data-wrapper'])
 
+            #find all anchor tags
+        atag = soup.find_all('a', href=True)
+        for tag in atag:
+            url = tag['href']
+            url not in crawled and handle(url, deep+1)
+
+        item = soup.find('div', ['job-detail'])
         if not item: return {}
 
-        title = item.find('h3', ['job-name'])
-        if title:
-            title = title.text or ''
-
-        content = soup.find_all('div', ['read-more-content'])
-        # print(_.attrs['class'] for _ in content)
+        title = bsfind(item, 'h1', ['job_title'])
+        salary_range = bsfind(item, 'div', ['salary']).strip()
+        address = bsfind(item, 'div', ['address'])
+        post_date = bsfind(item, 'div', ['distance-time-job-posted'])
+        content = soup.find_all('div', ['job_description', 'skills_experience', 'love_working_here'])
         if content:
             content = "\n\n".join([_.text.strip() or '' for _ in content])
-
-        salary_range = item.find('strong', ['hidden-xs'])
-
-        if salary_range:
-            salary_range = (salary_range.text or '').strip()
-        return {
+        data = {
             'post_url': url,
             'post_img': extract_img(item),
             'title': title,
             'content': content,
-            'salary_range': salary_range
+            'salary_range': salary_range,
+            'address': address,
+            'post_date': post_date
         }
+
+        requests.post(host_url, json=data)
+        crawled.append(url)
 
 class Spider(scrapy.Spider):
     name = "example"
@@ -91,27 +117,23 @@ class Spider(scrapy.Spider):
                 job_url.append(l)
 
 
-def start():
+
+async def start():
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
     })
 
     process.crawl(Spider)
     process.start()
-
-    for j in job_url:
-        print(j)
-    print(len(job_url))
     import json
     import time
     import requests
+    
 
-    for url in job_url[1:]:
-        data = parse(url)
-        # send data to save
-        host_url = "http://localhost:8000/api/store"
-        requests.post(host_url, json=data)
-        time.sleep(5)
+    for url in job_url:
+        url not in crawled and await handle(absolute_url(url))
+        time.sleep(2)
 
 if __name__ == '__main__':
-    start()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start())

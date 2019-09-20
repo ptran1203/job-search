@@ -12,6 +12,8 @@ class Post(models.Model):
     salary_range = models.CharField(max_length=50)
     post_img = models.CharField(max_length=255)
     post_url = models.CharField(max_length=255)
+    post_date = models.CharField(max_length=50, default='empty')
+    address = models.CharField(max_length=150, default='empty')
     create_date = models.DateTimeField(default=timezone.now)
 
     # use for vector space model
@@ -34,6 +36,8 @@ class Post(models.Model):
             post_img = obj['post_img'][:255],
             post_url = obj['post_url'][:255],
             salary_range = obj['salary_range'],
+            post_date = obj['post_date'][:50],
+            address = obj['address'][:150]
         )
         new.save()
         return new
@@ -64,5 +68,7 @@ class Post(models.Model):
             'content': content,
             'post_img': self.post_img,
             'salary_range': self.salary_range,
-            'post_url': self.post_url
+            'post_url': self.post_url,
+            'post_date': self.post_date,
+            'address': self.address,
         }

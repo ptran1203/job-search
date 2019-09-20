@@ -1,7 +1,6 @@
 from post.models import Post
-from .vector_space import Vocabulary, VectorSpace
 from helper import common as commonHelper
-from .models import Searcher, Keywords
+from .models import Searcher, Keywords, Vocabulary, VectorSpace
 
 
 def search_result(query):

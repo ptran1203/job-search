@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .vector_space import Vocabulary
-from .models import Keywords
+from .models import Keywords, Vocabulary
 # Register your models here.
 admin.site.register(Vocabulary)
 admin.site.register(Keywords)

@@ -6,6 +6,9 @@ from scrapy.crawler import CrawlerProcess
 from bs4 import BeautifulSoup
 from random import randrange
 import asyncio
+import json
+import time
+import requests
 
 # constants
 user_agents = [
@@ -20,6 +23,15 @@ max_deep = 3
 crawled = []
 host_url = "http://localhost:8000/api/store"
 
+def bsfind(soup, tag, classes):
+    res = soup.find(tag, classes)
+    if res:
+        return res.text.strip()
+    return ''
+
+def get_post_date(str):
+    pos = str.lower().find('đã')
+    return str[pos:].replace('  ', '').replace('\n', '')
 
 def extract_url(item):
     atag = item.find('a')
@@ -48,6 +60,7 @@ async def handle(url, deep=0):
     """
     Parse detail recursive
     """
+    time.sleep(2)
     if (deep >= max_deep):
         return
 
@@ -55,36 +68,33 @@ async def handle(url, deep=0):
     r.encoding = 'utf-8'
     soup = BeautifulSoup(r.text, 'html.parser')
 
-    # find all anchor tags
+    #find all anchor tags
     atag = soup.find_all('a', href=True)
     for tag in atag:
         url = tag['href']
         url not in crawled and handle(url, deep+1)
 
     item = soup.find('div', ['job-detail-data-wrapper'])
-
     if not item: return {}
 
-    title = item.find('h3', ['job-name'])
-    if title:
-        title = title.text or ''
-
+    title = bsfind(item, 'h3', ['job-name'])
+    salary_range = bsfind(item, 'strong', ['hidden-xs'])
+    address = bsfind(item, 'p', ['company-location']).replace('  ', '').replace('\n', '')
+    post_date = get_post_date(bsfind(item, 'span', ['job-post-day']))
     content = soup.find_all('div', ['read-more-content'])
-    # print(_.attrs['class'] for _ in content)
     if content:
         content = "\n\n".join([_.text.strip() or '' for _ in content])
-
-    salary_range = item.find('strong', ['hidden-xs'])
-
-    if salary_range:
-        salary_range = (salary_range.text or '').strip()
+    # print(_.attrs['class'] for _ in content)
     data = {
         'post_url': url,
         'post_img': extract_img(item),
         'title': title,
         'content': content,
-        'salary_range': salary_range
+        'salary_range': salary_range,
+        'post_date': post_date,
+        'address': address
     }
+
     requests.post(host_url, json=data)
     crawled.append(url)
 
@@ -121,16 +131,10 @@ async def start():
 
     process.crawl(Spider)
     process.start()
-    import json
-    import time
-    import requests
-    
 
-    for url in job_url[1:]:
+    for url in job_url:
         url not in crawled and await handle(url)
-        time.sleep(2)
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start())
-    # start()

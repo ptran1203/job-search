@@ -39,6 +39,10 @@ const template_map = {
         <div class="job-desc" style="white-space: pre-line">#content#</div>
     </div>
     <div class="modal-footer">
+        <p>
+        <span>#post_date#</span>
+        <span>#address#</span>
+        </p>
         <a href="#post_url#" class="btn" id="btn_ingresar">Appy</a>
     </div>
   </div>
