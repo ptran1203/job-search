@@ -1,14 +1,14 @@
-# CRAWL DATA FROM https://topitworks.com/vi/viec-lam
 
 import scrapy
 import requests
 from scrapy.crawler import CrawlerProcess
 from bs4 import BeautifulSoup
+from multiprocessing.dummy import Pool 
 from random import randrange
-import asyncio
 import json
 import time
 import requests
+
 
 # constants
 user_agents = [
@@ -17,11 +17,21 @@ user_agents = [
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36',
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
 ]
-disallow_path = ['/skill/', '/cong-ty/', '/city/']
+disallow_path = ['/skill/', '/cong-ty/', '/city/', '/signin/']
+skills = ['python','c++', 'asp', 'html', 'java',
+    'javascript', 'ruby', 'nodejs', 'android',
+    'ios', 'mysql', 'c++', 'php',]
 job_url = []
 max_deep = 3
 crawled = []
 host_url = "http://localhost:8000/api/store"
+google_cache_url = 'http://webcache.googleusercontent.com/search?q=cache:http://'
+
+def urls():
+    topitworks_url = 'topitworks.com/vi/viec-lam'
+    urls = [topitworks_url + '/skill/' + \
+        skill for skill in skills] + [topitworks_url]
+    return [google_cache_url + url for url in urls]
 
 def bsfind(soup, tag, classes):
     res = soup.find(tag, classes)
@@ -52,27 +62,20 @@ def rand_headers():
     }
 
 def is_accept_url(url):
-    return '/viec-lam/' in url and not \
-        any(_ in url for _ in disallow_path)
+    return '/vi/viec-lam/' in url and not \
+        any(_ in url for _ in disallow_path) and \
+        url.count('/') == 5
 
 
-async def handle(url, deep=0):
+def handle(url):
     """
     Parse detail recursive
     """
-    time.sleep(2)
-    if (deep >= max_deep):
-        return
-
+    # time.sleep(2)
+    
     r =  requests.get(url, headers=rand_headers())
     r.encoding = 'utf-8'
     soup = BeautifulSoup(r.text, 'html.parser')
-
-    #find all anchor tags
-    atag = soup.find_all('a', href=True)
-    for tag in atag:
-        url = tag['href']
-        url not in crawled and handle(url, deep+1)
 
     item = soup.find('div', ['job-detail-data-wrapper'])
     if not item: return {}
@@ -94,47 +97,34 @@ async def handle(url, deep=0):
         'post_date': post_date,
         'address': address
     }
-
+    # print(data)
+    # return
     requests.post(host_url, json=data)
     crawled.append(url)
 
-class Spider(scrapy.Spider):
-    name = "example"
-    google_cache_url = 'http://webcache.googleusercontent.com/search?q=cache:http://'
-    allowed_domains = ['topitworks.com, webcache.googleusercontent.com']
-    start_urls = (
-        google_cache_url + 'topitworks.com/vi/viec-lam',
-    )
+def crawl(in_url):
+    print('crawling ', in_url)
+    r =  requests.get(in_url, headers=rand_headers())
+    r.encoding = 'utf-8'
+    soup = BeautifulSoup(r.text, 'html.parser')
 
-    def start_requests(self):
-        for url in self.start_urls:
-            yield scrapy.Request(url, self.parse, meta={
-                'splash': {
-                    'endpoint': 'render.html',
-                    'args': {'wait': 0.5}
-                }
-            })
-
-    def parse(self, response):
-        """
-        Parse url in page
-        """
-        for url in response.xpath('//a/@href').extract():
-            if is_accept_url(url):
-                job_url.append(url)
+    #find all anchor tags
+    atag = soup.find_all('a', href=True)
+    i =0
+    for tag in atag:
+        url = tag['href']
+        if (is_accept_url(url) and url not in crawled):
+            handle(url)
+            print('process: ', url)
+    
+    print('DONE----\n')
 
 
-async def start():
-    process = CrawlerProcess({
-        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
-    })
 
-    process.crawl(Spider)
-    process.start()
+def start():
+    for url in urls():
+        crawl(url)
 
-    for url in job_url:
-        url not in crawled and await handle(url)
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(start())
+    start()
