@@ -21,6 +21,7 @@ disallow_path = ['/skill/', '/cong-ty/', '/city/', '/signin/']
 skills = ['python','c++', 'asp', 'html', 'java',
     'javascript', 'ruby', 'nodejs', 'android',
     'ios', 'mysql', 'c++', 'php',]
+
 job_url = []
 max_deep = 3
 crawled = []
