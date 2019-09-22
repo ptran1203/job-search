@@ -25,7 +25,8 @@ skills = ['python','c++', 'asp', 'html', 'java',
 job_url = []
 max_deep = 3
 crawled = []
-host_url = "http://localhost:8000/api/store"
+# host_url = "http://localhost:8000/api/store"
+host_url = "http://jsearcher-api.herokuapp.com/api/store"
 google_cache_url = 'http://webcache.googleusercontent.com/search?q=cache:http://'
 
 def urls():
