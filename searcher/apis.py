@@ -8,11 +8,13 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Keywords, VectorSpace
 from django.core import serializers
 from helper import http as httpHelper
+from helper import slack
 from .services import search_result
 
 def buildVS(request):
     try:
         V = VectorSpace()
+        slack.send_as_thread('build vectorspace successfully, size =' + str(V.size))
         return JsonResponse({
             "status": "Done",
             "size": V.size
@@ -26,7 +28,8 @@ def buildVS(request):
 
 def search(request):
     query = request.GET.get('q')
-
+    user_agent = request.META['HTTP_USER_AGENT']
+    slack.send_as_thread('request from: ```%s``` \n query=%s' %(user_agent, query))
     if not query:
         return HttpResponse("no query")
 
