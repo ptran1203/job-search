@@ -36,8 +36,13 @@ def search(request):
     return JsonResponse(search_result(query), safe=False)
 
 def keywords(request):
+    sort_map = {
+        '1': '-num_of_searches'
+    }
+
     is_string = request.GET.get('is_string')
-    query_set = Keywords.objects.all()
+    sort_type= str(request.GET.get('sort_type') or 1)
+    query_set = Keywords.objects.all().order_by(sort_map(sort_type))
     if not is_string:
         return JsonResponse([
             item.json_object() for item in query_set
