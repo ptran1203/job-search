@@ -42,7 +42,7 @@ def keywords(request):
 
     is_string = request.GET.get('is_string')
     sort_type= str(request.GET.get('sort_type') or 1)
-    query_set = Keywords.objects.all().order_by(sort_map(sort_type))
+    query_set = Keywords.objects.all().order_by('-num_of_searches')
     if not is_string:
         return JsonResponse([
             item.json_object() for item in query_set
