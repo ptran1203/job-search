@@ -28,8 +28,6 @@ def buildVS(request):
 
 def search(request):
     query = request.GET.get('q')
-    user_agent = request.META['HTTP_USER_AGENT']
-    slack.send_as_thread('request from: ```%s``` \n query=%s' %(user_agent, query))
     if not query:
         return HttpResponse("no query")
 
@@ -46,3 +44,5 @@ def keywords(request):
     return JsonResponse([
         item.word for item in query_set
     ], safe=False)
+
+# gg api key: AIzaSyAIlPTH75veCC1TA7ajzt6JDxk3iIonTOc
