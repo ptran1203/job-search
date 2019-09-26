@@ -29,9 +29,11 @@ def get_results(docs, ids, terms):
     """
     doc_map = {}
     for doc in docs:
-        doc_obj = doc.json_object(is_html=True)
-        doc_obj['title'] = commonHelper.color_matches(terms, doc.title)
-        doc_obj['content'] = commonHelper.color_matches_long(terms,
+        doc_obj = doc.json_object()
+        doc_obj['title'] = doc.title
+        doc_obj['content'] = doc.content
+        doc_obj['title_m'] = commonHelper.color_matches(terms, doc.title)
+        doc_obj['content_m'] = commonHelper.color_matches_long(terms,
                 doc.content)
         doc_map[doc.id] = doc_obj
     return [doc_map[id] for id in ids]

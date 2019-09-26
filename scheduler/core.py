@@ -11,7 +11,6 @@ HOST_URL = "https://jsearcher-api.herokuapp.com/"
 
 
 def set_interval(func, sec):
-    print('start', func)
     def func_wrapper():
         set_interval(func, sec)
         func()
@@ -37,4 +36,4 @@ def start_scheduler(time_interval=SIX_HOURS):
     # set_interval(build_vectorspace, time_interval + 6000)
     set_interval(ping, 1500)
 
-start_scheduler()
+# start_scheduler()

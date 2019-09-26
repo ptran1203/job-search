@@ -73,10 +73,3 @@ def safe_index(index):
     if index <= 100:
         return 0
     return index - 100
-
-def split_content(text):
-    new_text = '<p>' + re.sub(
-        r'[^\w+\s\,\:]', '</p><p> -',
-        text) + '</p>'
-    
-    return new_text.replace('<p> -</p>', '')

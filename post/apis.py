@@ -23,7 +23,7 @@ def detail(request, id):
     Get data for specific post
     """
     post = Post.objects.get(pk=id)
-    return JsonResponse(post.json_object(is_html=False))
+    return JsonResponse(post.json_object())
 
 def count(request):
     """
