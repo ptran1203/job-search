@@ -8,5 +8,6 @@ def send(msg):
     requests.post(hook_url, data=json.dumps({'text': msg}))
 
 def send_as_thread(msg):
+    return
     thr = threading.Thread(target=send, args=(msg,), kwargs={})
     thr.start()

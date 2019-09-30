@@ -4,6 +4,7 @@ from .apis import(
     store_post,
     detail,
     count,
+    posts,
 )
 
 app_name = "post"
@@ -11,5 +12,6 @@ app_name = "post"
 urlpatterns = [
     path('store', store_post),
     path('post/<id>', detail),
-    path('count', count)
+    path('count', count),
+    path('posts', posts)
 ]

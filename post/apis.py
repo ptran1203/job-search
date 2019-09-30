@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from .models import Post
 from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
+from .models import Post
+
 import json
 
 @csrf_exempt
@@ -30,3 +32,23 @@ def count(request):
     Count item in DB
     """
     return JsonResponse({'count': Post.objects.count()})
+
+def posts(request):
+    """
+    Get posts and sort by condition
+    query: ?sort_type=<type>&limit=<limit>
+    """
+    sort_type = int(request.GET.get('sort_type')) or 1
+    limit = int(request.GET.get('limit')) or 15
+
+    sort_map = {
+        1: '-id',
+        2: 'id',
+        3: '-post_date',
+        4: 'post_date'
+    }
+
+    return JsonResponse([post.json_object() for post in \
+            Post.objects.\
+            order_by(sort_map[sort_type])[:limit]
+    ], safe=False)
