@@ -145,7 +145,9 @@ CSRF_COOKIE_SECURE = False
 SECURE_SSL_REDIRECT = False
 
 # CORS
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:5500/',
-    'https://ptran1203.github.io/jsearcher/']
+CORS_ORIGIN_WHITELIST = ['
+    'http://127.0.0.1:5500/',
+    'https://ptran1203.github.io/'
+]
 
 django_heroku.settings(locals())

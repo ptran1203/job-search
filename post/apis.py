@@ -17,7 +17,6 @@ def store_post(request):
     data = json.loads(request.body.decode('utf8'))
     Post.create(data)
 
-    # Post.create({'title':'vit'})
     return HttpResponse("Ok")
 
 def detail(request, id):
