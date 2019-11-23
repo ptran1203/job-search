@@ -1,0 +1,215 @@
+form {
+    width: 30rem;
+    padding: 1rem 0 5rem;
+    font-size: 1.5rem;
+    margin: auto;
+}
+h1 {
+    color: #FFF;
+    margin: 0 0 1rem;
+    padding: 0;
+    font-size: 1.75em;
+}
+
+button {
+    background: #2189CE;
+    border: none;
+    color: #FFF;
+    padding: 1rem;
+}
+/* eof Generic styles */
+
+.searchBox-fakeInput {
+    background: rgb(255, 255, 255);
+    border: none;
+    display: table;
+}
+.searchBox-inputWrapper_bordered {
+    border: 2px solid rgb(110, 110, 110);
+}
+.searchBox-inputWrapper,
+.searchBox-clearWrapper {
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+.searchBox-input {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: inherit;
+}
+.searchBox-input:focus {
+    outline: none;
+    background: none;
+    box-shadow: none;
+}
+
+.searchBox-input::-webkit-input-placeholder {
+    color: rgba(112, 112, 112, 0.75);
+}
+
+.searchBox-input:focus::-webkit-input-placeholder {
+    color: rgba(0,0,0,0.25);
+}
+.searchBox-clearWrapper {
+    font-size: 0.75em;
+    padding: 0 0.5rem;
+}
+.searchBox-clear {
+    color: #000;
+    padding: 0;
+    cursor: pointer;
+    font-size: inherit;
+    cursor: pointer;
+    line-height: 1.5;
+    -webkit-transition: all 3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.searchBox-clearInput:hover {
+    color: #AAA;
+}
+.spinner {
+    /* margin: 0; */
+    width: 100%;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(150, 25, 25, 0.3);
+    border-top-color: rgb(230, 101, 16);
+    border-radius: 50%;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+.bar {
+  float: left;
+  width: 15px;
+  height: 6px;
+  border-radius: 2px;
+  background-color: #4b9cdb;
+  text-align: center;
+
+}
+.bar {animation: loadingJ 2s cubic-bezier(.17,.37,.43,.67) infinite;}
+
+@keyframes loadingJ {
+  0%,100% {transform: translate(0,0);}
+  
+  50% {
+      transform: translate(80px,0);
+      background-color: #f5634a;
+      width: 25px;
+  }
+}
+h2, p, div {
+  margin: 0;
+  padding: 0;
+}
+h2 {
+  font-weight: bold;
+}
+div.more {
+  display: none;
+  margin: 10px 0 0 0;
+  padding: 10px;
+  background-color: #eee;
+  position: relative;
+}
+div.more.visible {
+  display: block;
+}
+div.more li {
+  list-style: none;
+  line-height: 1.4em;
+  font-size: 90%;
+}
+div.more .close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: #c0c7d4;
+  cursor: pointer;
+}
+
+.search-result {
+  /* border-bottom: 1px solid; */
+  background-color: #fff;
+  padding: 15px;
+  display: flex;
+  position: relative;
+  margin: 5px;
+  cursor: pointer;
+}
+.search-result.new-job {
+  border-left: 5px solid #fd8925;
+}
+.search-result.new-job .badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  border: 2px solid #fd8925;
+  background-color: rgba(253, 137, 37, 0.2);
+  color: #fd8925;
+}
+.search-result h2 {
+  color: #2a5f9c;
+}
+.search-result a {
+  text-decoration: none;
+  color: #248afa;
+}
+.search-result .icon {
+  margin: 0 15px 0 0;
+}
+.search-result .reviews {
+  color: #fd8925;
+}
+
+.search-result div > div p {
+  color: #646464;
+  margin-top: 10px;
+}
+.search-result .salary {
+  color: #fd8925;
+}
+.matched {
+  color: #ce5f19;
+  margin: 0;
+}
+#autocomplete {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+.active {
+  /* border-top: 1px solid; */
+  /* border-bottom: 1px solid; */
+  background-color: rgb(224, 224, 224);
+}
+.detail {
+  /* overflow-y: scroll; */
+  position: fixed;
+  height: 95%;
+  top: 30px;
+}
+#jobs {
+  width: 70%;
+}
+.job-desc {
+  font-size: 14px;
+  line-height: 1.5;
+}

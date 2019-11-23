@@ -1,0 +1,59 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>iseek</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="shortcut icon" href="/media/favicon.ico"> -->
+    <link 
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+    <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+    <!-- new -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400|Roboto:300,400,500">
+    <link rel="stylesheet" href="{% static 'css/search.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/scrollbar.css' %}"/>
+  </head>
+  <body>
+    <div id="pages">
+      <div class="nav">
+        <a href="/report"> report</a>
+        <a href="https://liweisure.github.io"> liwei</a>
+        <a href="/admin">admin</a>
+      </div>
+      <form id="search-form" action="/search">
+        <div class="searchBox-fakeInput">
+          <div class="searchBox-inputWrapper searchBox-inputWrapper_bordered">
+            <input type="text"
+                  name="q"
+                  placeholder="type skill or something..."
+                  class="form-control searchBox-input js-searchBox-input"
+                  autocomplete="none">
+            <ul id="autocomplete"></ul>
+          </div>
+          <div class="searchBox-clearWrapper">
+            <span class="js-clearSearchBox"><button>Go</button></span>
+          </div>
+        </div>
+      </form>
+        {% block content %}
+        {% endblock content %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+  <style>
+  a {
+    padding: 14px;
+  }
+  .nav {
+    margin-top: 15px;
+    margin-left: 20px;
+  }
+  </style>
+</body>
+</html>

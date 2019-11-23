@@ -1,0 +1,41 @@
+
+{
+    "topitworks": {
+        "base_url": "https://www.topitworks.com/vi/viec-lam",
+        "tag": {
+            "base": "div",
+            "title": "h3",
+            "content": "div",
+            "salary": "strong",
+            "address": "p",
+            "post_date": "span"
+        },
+        "classes": {
+            "base": ["job-detail-data-wrapper"],
+            "title": ["job-name"],
+            "content": ["read-more-content"],
+            "salary": ["hidden-xs"],
+            "address": ["company-location"],
+            "post_date": ["job-post-day"]
+        }
+    },
+    "itviec": {
+        "base_url": "https://itviec.com/viec-lam-it",
+        "tag": {
+            "base": "div",
+            "title": "h1",
+            "content": "div",
+            "salary": "div",
+            "address": "div",
+            "post_date": "div"
+        },
+        "classes": {
+            "base": ["job-detail"],
+            "title": ["job_title"],
+            "content": ["job_description", "skills_experience", "love_working_here"],
+            "salary": ["salary"],
+            "address": ["address"],
+            "post_date": ["distance-time-job-posted"]
+        }
+    }
+}

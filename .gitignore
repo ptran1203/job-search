@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+.vscode/
+db.sqlite3
+*/migrations/
+test.py
+zsave.html
+cache/storage/*.json
+
+*.h5

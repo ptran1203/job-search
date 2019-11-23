@@ -1,0 +1,71 @@
+
+{% extends "base.html" %}
+{% load humanize %} 
+{% load staticfiles %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/common/animation.css"/>
+    <div class="container">
+      crawler panel
+      <div>
+        <div>
+            <h4>topitworks</h4> <button onclick="start_spider(1)">start</button> <i id="rs1"></i>
+        </div>
+        <div>
+            <h4>itviec</h4> <button onclick="start_spider(2)">start</button> <i id="rs2"></i>
+        </div>
+      </div>
+      Crawler report
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Running time</th>
+            <th scope="col">Crawled pages</th>
+            <th scope="col">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in records %}
+          <tr>
+            <th scope="row">{{ idx }}</th>
+            <td>{{ record.run_at | naturaltime}}</td>
+            <td>{{ record.get_running_time }}</td>
+            <td>{{ record.crawled_pages }}</td>
+            <td>{{ record.get_source_name }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+<script>
+function start_spider(src_type) {
+  fetch(`/api/crawler/start?k=asd56a4s651ca&src=${src_type}`)
+  .then(
+    function(response) {
+      let ele = document.getElementById('rs' + src_type)
+      if (response.status !== 200) {
+        ele.innerHTML = 'falied'
+        return;
+      }
+      response.json().then(function(data) {  
+        ele.innerHTML = data['status']
+      });
+    }
+  )
+}
+</script>
+<style>
+  h4 {
+    display: inline-block;
+  }
+  button {
+    cursor: pointer;
+    text-decoration: none;
+    padding: 8px;
+    color: rgb(226, 226, 226);
+    margin-left: 20px;
+  }
+</style>
+{% endblock content %}
