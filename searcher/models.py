@@ -21,7 +21,7 @@ class Keywords(models.Model):
 
     status_type:
         0 -> not exist in vocabulary
-        1 -> exist in vocabulary
+        1 -> exist in vocabulary1
     """ 
     word = models.CharField(max_length=100)
     num_of_searches = models.IntegerField(default=0)
