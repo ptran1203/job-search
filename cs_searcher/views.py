@@ -10,7 +10,7 @@ from searcher.services import search_result
 from spider.models import SpiderReport
 
 import numpy as np
-from facial_beauty.facial_beauty import predict
+from facial_beauty.facial_beauty import predict, dropped
 
 def top_page(request):
     template_name = 'index.html'
@@ -45,13 +45,23 @@ def facial_predict(request):
         return HttpResponse("please correct your request")
 
     file = request.FILES.get('file')
+    name = request.GET.get('n')
     if file:
+        result = predict(file, name)
+        if not result:
+            return JsonResponse({'error': 'could not detect face'})
+
         return JsonResponse({
-            'score': str(round(predict(file), 1))
+            'score': str(round(result['score'], 1)),
         })
 
     return JsonResponse({'error': 'ERR4526'})
 
+
+def dropped_img(request):
+    name = request.GET.get('n')
+    image_data = dropped(name)
+    return HttpResponse(image_data, content_type="image/png")
 
 # error page
 def handler404(request, *args, **kwargs):

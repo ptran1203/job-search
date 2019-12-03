@@ -19,14 +19,16 @@ from django.conf.urls import include
 from .views import (top_page,
                     search_view,
                     report,
-                    facial_predict)
+                    facial_predict,
+                    dropped_img)
 
 
 apis = [
     path('api/', include('post.urls', namespace='crawler')),
     path('api/', include('searcher.urls')),
     path('api/', include('spider.urls')),
-    path('api/facial/score', facial_predict )
+    path('api/facial/score', facial_predict ),
+    path('api/facial/face', dropped_img)
 ]
 
 pages = [

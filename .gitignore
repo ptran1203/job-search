@@ -8,3 +8,4 @@ zsave.html
 cache/storage/*.json
 
 *.h5
+facial_beauty/tmp/

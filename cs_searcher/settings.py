@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,6 +150,7 @@ SECURE_SSL_REDIRECT = False
 # CORS
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
+    'http://localhost:3000/',
     'http://127.0.0.1:3000',
     'https://ptran1203.github.io',
     'https://liweisure.github.io',
