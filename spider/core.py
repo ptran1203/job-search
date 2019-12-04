@@ -8,6 +8,13 @@ import sys
 IS_PROD = True
 HOST_URL = 'https://iseek.herokuapp.com/' if IS_PROD else 'http://localhost:8000/'
 
+
+def slack_notify(msg):
+    requests.post(
+        'https://hooks.slack.com/services/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',
+        data=json.dumps({'text': msg})
+    )
+
 class TopItWorkSpider(BaseSpider):
     @staticmethod
     def get_post_date(time_str):
@@ -64,14 +71,13 @@ if __name__ == "__main__":
             start = time.time()
             crawled_pages = TopItWorkSpider(configs['topitworks']).start()
             running_time = round(time.time() - start, 2)
-            report(running_time, crawled_pages, 1)
+            slack_notify('topitwork crawler finished in ' + str(running_time) + 's')
+            # report(running_time, crawled_pages, 1)
         if 'itviec' in sites:
             start = time.time()
             crawled_pages = ItViecSpider(configs['itviec']).start()
             running_time = round(time.time() - start, 2)
-            report(running_time, crawled_pages, 2)
+            slack_notify('itviec crawler finished in ' + str(running_time) + 's')
+            # report(running_time, crawled_pages, 2)
     except Exception as e:
-        requests.post(
-            'https://hooks.slack.com/services/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',
-            data=json.dumps({'text': 'error with crawler: ' + str(e)})
-        )
+        slack_notify('error with crawler: ' + str(e))

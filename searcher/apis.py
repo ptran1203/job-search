@@ -28,10 +28,10 @@ def buildVS(request):
             "time": running_time,
             })
     except Exception as e:
-        slack.send(e)
+        slack.send(str(e))
         return JsonResponse({
             "status": "Error!",
-            "size": 0
+            "msg": str(e),
             })
 
 

@@ -22,7 +22,7 @@ def store(request):
     #     crawled_pages = data['crawled_pages'] or 0,
     #     src_type = data['src_type'] or 0,
     # )
-    new.save()
+    # new.save()
     return HttpResponse("Ok")
 
 def start_crawler(request):
