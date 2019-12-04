@@ -7,7 +7,7 @@ from django.core import serializers
 from django.shortcuts import redirect
 from post.models import Post
 from searcher.services import search_result
-from spider.models import SpiderReport
+# from spider.models import SpiderReport
 
 import numpy as np
 # from facial_beauty.facial_beauty import predict
@@ -33,10 +33,10 @@ def report(request):
     access_key = request.GET.get('k')
     if access_key != 'sad03121':
         return render(request, '404.html')
-    records = SpiderReport.objects.all().order_by('-run_at')
+    # records = SpiderReport.objects.all().order_by('-run_at')
     return render(
         request, 'report.html',
-        context={'records': records}
+        context={'records': []}
     )
 
 

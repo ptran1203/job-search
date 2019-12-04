@@ -1,4 +1,4 @@
-from .models import SpiderReport
+# from .models import SpiderReport
 from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from helper import slack
@@ -17,11 +17,11 @@ def store(request):
         return HttpResponse("please correct your request")
 
     data = json.loads(request.body.decode('utf8'))
-    new = SpiderReport(
-        running_time = data['running_time'] or 0,
-        crawled_pages = data['crawled_pages'] or 0,
-        src_type = data['src_type'] or 0,
-    )
+    # new = SpiderReport(
+    #     running_time = data['running_time'] or 0,
+    #     crawled_pages = data['crawled_pages'] or 0,
+    #     src_type = data['src_type'] or 0,
+    # )
     new.save()
     return HttpResponse("Ok")
 
