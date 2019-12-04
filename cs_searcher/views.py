@@ -7,7 +7,7 @@ from django.core import serializers
 from django.shortcuts import redirect
 from post.models import Post
 from searcher.services import search_result
-# from spider.models import SpiderReport
+from spider.models import SpiderReport
 
 import numpy as np
 # from facial_beauty.facial_beauty import predict
