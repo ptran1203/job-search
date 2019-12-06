@@ -26,7 +26,7 @@ Unidecode==1.1.1
 virtualenv==16.4.3
 whitenoise==4.1.2
 
-tensorflow==1.15.0
+tensorflow
 pandas==0.25.3
 Pillow==6.2.1
 numpy==1.17.4
