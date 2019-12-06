@@ -10,7 +10,7 @@ from searcher.services import search_result
 from spider.models import SpiderReport
 
 import numpy as np
-# from facial_beauty.facial_beauty import predict
+from facial_beauty.facial_beauty import predict
 
 def top_page(request):
     template_name = 'index.html'
@@ -40,17 +40,17 @@ def report(request):
     )
 
 
-# def facial_predict(request):
-#     if request.method != 'POST':
-#         return HttpResponse("please correct your request")
+def facial_predict(request):
+    if request.method != 'POST':
+        return HttpResponse("please correct your request")
 
-#     file = request.FILES.get('file')
-#     if file:
-#         return JsonResponse({
-#             'score': str(round(predict(file), 1))
-#         })
+    file = request.FILES.get('file')
+    if file:
+        return JsonResponse({
+            'score': str(round(predict(file), 1))
+        })
 
-#     return JsonResponse({'error': 'ERR4526'})
+    return JsonResponse({'error': 'ERR4526'})
 
 
 # error page
