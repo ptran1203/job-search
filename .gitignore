@@ -2,7 +2,7 @@
 __pycache__/
 .vscode/
 db.sqlite3
-*/migrations/
+# migrations
 test.py
 zsave.html
 cache/storage/*.json

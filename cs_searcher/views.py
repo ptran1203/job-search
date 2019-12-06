@@ -36,7 +36,7 @@ def report(request):
     records = SpiderReport.objects.all().order_by('-run_at')
     return render(
         request, 'report.html',
-        context={'records': records}
+        context={'records': []}
     )
 
 
