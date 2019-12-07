@@ -21,9 +21,9 @@ def set_interval(func, sec):
 # use later
 def ping():
     # do not ping from 3AM to 6AM
-    if (2 < datetime.datetime.now().hour < 7):
-        slack.send('Server sleeping now...')
-        return
+    # if (2 < datetime.datetime.now().hour < 7):
+    #     slack.send('Server sleeping now...')
+    #     return
     r = requests.get(HOST_URL + 'api/keywords')
 
 def run_spider():

@@ -36,32 +36,8 @@ def report(request):
     records = SpiderReport.objects.all().order_by('-run_at')
     return render(
         request, 'report.html',
-        context={'records': []}
+        context={'records': records}
     )
-
-
-def facial_predict(request):
-    if request.method != 'POST':
-        return HttpResponse("please correct your request")
-
-    file = request.FILES.get('file')
-    name = request.GET.get('n')
-    if file:
-        result = predict(file, name)
-        if not result:
-            return JsonResponse({'error': 'could not detect face'})
-
-        return JsonResponse({
-            'score': str(round(result['score'], 1)),
-        })
-
-    return JsonResponse({'error': 'ERR4526'})
-
-
-def dropped_img(request):
-    name = request.GET.get('n')
-    image_data = dropped(name)
-    return HttpResponse(image_data, content_type="image/png")
 
 # error page
 def handler404(request, *args, **kwargs):
