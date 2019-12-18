@@ -5,7 +5,6 @@ import json
 import time
 import datetime
 import requests
-import requests
 import re
 
 

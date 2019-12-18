@@ -10,7 +10,6 @@ from searcher.services import search_result
 from spider.models import SpiderReport
 
 import numpy as np
-from facial_beauty.facial_beauty import predict, dropped
 
 def top_page(request):
     template_name = 'index.html'
