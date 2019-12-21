@@ -133,9 +133,9 @@ class BaseSpider:
             'post_img': self.extract_img(item),
             'title': self.parse_title(item),
             'content': self.parse_content(soup, item),
-            'salary_range': self.parse_salary(item),
+            'salary_range': self.filter_salary(self.parse_salary(item)),
             'post_date':post_date,
-            'address': self.parse_address(item)
+            'address': self.parse_address(item).replace('Xem bản đồ', '')
         }
 
         post_date and requests.post(host_url + '/api/store', json=data)
@@ -149,6 +149,12 @@ class BaseSpider:
                 and _url not in crawled:
                 crawled.append(_url)
                 self.crawl(_url)
+
+    @staticmethod
+    def filter_salary(salary):
+        if '$' in salary:
+            return salary
+        return ''
 
     def parse_title(self, item):
         tag = self.selector['tag']['title']
