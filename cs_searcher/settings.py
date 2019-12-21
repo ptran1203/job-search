@@ -150,7 +150,7 @@ SECURE_SSL_REDIRECT = False
 # CORS
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
-    'http://localhost:3000/',
+    'http://127.0.0.1:5501',
     'http://127.0.0.1:3000',
     'https://ptran1203.github.io',
     'https://liweisure.github.io',

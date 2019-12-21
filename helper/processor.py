@@ -39,18 +39,26 @@ def mark_content(terms, text):
     """
     color matches text and query
     """
-    final = ''
+    changed = False
     for term in terms:
         term_regex = r'\W{}\W'.format(term)
         match = re.search(term_regex, text, re.IGNORECASE)
         if match:
+            changed = True
             start, end = match.span()
             matching = match.group(0)
-            final += text.replace(
-                matching,
-                color_style(matching)
-                )[safe_index(start) : end + 150]
-    return get_final(final) or text[:250] + "..."
+            if not matching[-1].isalpha():
+                matching = matching[:-1]
+            if not matching[1].isalpha():
+                matching = matching[1:]
+        
+            insensitive = re.compile(re.escape(matching), re.IGNORECASE)
+            text = insensitive.sub(
+                color_style(matching),
+                text
+                )[safe_index(start) : end + 200]
+
+    return get_final(text) if changed else text[:250] + "..."
 
 def get_final(final_res):
     if final_res == '':
@@ -76,6 +84,6 @@ def color_style(word):
     return '<span class="matched">' + word + '</span>'
 
 def safe_index(index):
-    if index <= 150:
+    if index <= 200:
         return 0
-    return index - 150
+    return index - 200

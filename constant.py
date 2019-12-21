@@ -1,5 +1,7 @@
 # from nltk.corpus import stopwords
 from unidecode import unidecode
+import json
+
 vietnamese_raw_stopwords = "có,sử,dụng,ra,các,những,và,xin,giới,thiệu," \
                             "chào,ưu,nhược,ơi,ấy,tạm,biệt,nhiều,lại,ngoài"
 vietnamese_stopwords = unidecode(vietnamese_raw_stopwords).split(',')
@@ -22,8 +24,19 @@ english_stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves'
     "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
 
 # constant
-STOPWORDS = set(english_stopwords + vietnamese_stopwords)
+config = None
 IS_PROD = True
+
+try:
+    with open('config.json', 'r') as f:
+        config = json.loads(f.read())
+    
+    if config['env'] == 'dev':
+        IS_PROD = False
+
+except Exception as e:
+    pass
+STOPWORDS = set(english_stopwords + vietnamese_stopwords)
 CACHE = IS_PROD
 HOST_URL = 'https://iseek.herokuapp.com/' if IS_PROD else 'http://localhost:8000/'
 
