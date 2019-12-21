@@ -54,7 +54,7 @@ def mark_content(terms, text):
         
             insensitive = re.compile(re.escape(matching), re.IGNORECASE)
             text = insensitive.sub(
-                color_style(matching),
+                color_style(matching), 
                 text
                 )[safe_index(start) : end + 200]
 
