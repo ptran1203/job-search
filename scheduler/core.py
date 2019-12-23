@@ -28,7 +28,7 @@ def ping():
 
 def run_spider():
     now = datetime.datetime.now()
-    if (now.hour != 23):
+    if (now.hour != 23 or now.hour != 13):
         return
 
     slack.send('start crawler')
