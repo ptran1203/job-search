@@ -27,10 +27,6 @@ def ping():
     r = requests.get(HOST_URL + 'api/keywords')
 
 def run_spider():
-    now = datetime.datetime.now()
-    if (now.hour != 23 or now.hour != 13):
-        return
-
     slack.send('start crawler')
     subprocess.call(['python', 'spider/core.py'])
     # clean posts first
@@ -46,6 +42,6 @@ def clear_cache():
 
 # export
 def start_scheduler():
-    set_interval(run_spider, one_minute * 60)
+    set_interval(run_spider, one_minute * 60 * 7)
     set_interval(ping, one_minute * 27)
     set_interval(clear_cache, one_minute * 60)
