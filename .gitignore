@@ -8,3 +8,7 @@ zsave.html
 cache/storage/*.json
 
 config.json
+estimator/save.json
+estimator/trainX
+estimator/trainY
+

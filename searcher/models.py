@@ -1,6 +1,7 @@
 from post.models import Post
 from helper import processor
 from django.db import models
+from estimator import nn
 import re
 import math
 
@@ -72,6 +73,7 @@ class VectorSpace:
         """
         vocab, posts = self.init_vocab_posts()
         self.size = self.build(vocab, posts)
+        self.fixed_build(nn.vocabulary(), posts)
 
     def __str__(self):
         return str(self.size)
@@ -158,4 +160,21 @@ class VectorSpace:
         Vocabulary.objects.all().delete()
         Vocabulary.objects.create(data=','.join(vocab),
                                     count=len(vocab))
+        return len(post_map)
+
+    def fixed_build(self, vocab, posts):
+        inverted_indexes = self.generate_inverted_index(vocab, posts)
+        idf_map = self._idfs(inverted_indexes, len(vocab))
+
+        # set tf in vector
+        post_map = {p.id:[0]*len(vocab) for p in posts}
+        for term, post_count in inverted_indexes.items():
+            for post_id, count in post_count.items():
+                tf = 1 + math.log(count) if count > 0 else 0
+                post_map[post_id][vocab.index(term)] = \
+                        round(tf * idf_map[term], 2)
+
+        for post in posts:
+            post.set_fixed_vector(post_map[post.id])
+
         return len(post_map)

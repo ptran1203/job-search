@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpRespons
 from django.views.decorators.csrf import csrf_exempt
 from helper import slack
 from django.utils import timezone
+from django.db import connection
 from django.contrib.humanize.templatetags import humanize
 import json
 import datetime
@@ -17,6 +18,8 @@ sort_types = {
     5: '-id',
     6: 'id'
 }
+
+API_KEY = '1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8'
 
 @csrf_exempt
 def store_post(request):
@@ -63,9 +66,10 @@ def clean(request):
 
 def get_posts(request):
     query = request.GET
-    limit = query.get('limit') or 30
-    sort = int(query.get('sort') or 1)
-    page = int(query.get('page') or 1)
+    limit = query.get('limit', 30)
+    sort = int(query.get('sort', 1))
+    page = int(query.get('page', 1))
+    condition = query.get('condition', '')
     if sort in sort_types:
         sort = sort_types[sort]
     else:
@@ -74,6 +78,18 @@ def get_posts(request):
     return JsonResponse(pagination.sub(_posts(sort), page),
                         safe=False)
 
+def get_posts_by_query(request):
+    # validation
+    if request.GET.get('api_key', '') != API_KEY:
+        return JsonResponse({'msg': 'bad request'})
+    
+    sql = request.GET.get('sql', ('SELECT *'
+                                  'FROM post_post LIMIT 20;'))
+    
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    posts = cursor.fetchall()
+    return JsonResponse(posts, safe=False)
 
 # --                 utils                -- #
 def _posts(sort):
