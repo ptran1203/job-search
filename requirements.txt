@@ -20,8 +20,11 @@ qtconsole==4.4.3
 queuelib==1.5.0
 reportlab==3.3.0
 requests==2.20.1
-scipy==1.1.0
-Scrapy==1.7.3
 Unidecode==1.1.1
 virtualenv==16.4.3
 whitenoise==4.1.2
+keras==1
+h5py==2.8.0
+Keras==2.2.5
+tensorflow==1.14.0
+scipy==1.3.2

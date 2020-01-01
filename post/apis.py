@@ -91,6 +91,13 @@ def get_posts_by_query(request):
     posts = cursor.fetchall()
     return JsonResponse(posts, safe=False)
 
+
+def estimate_salary(request, id):
+    post = Post.objects.get(pk=id)
+    return JsonResponse({
+        'salary': post.estimate_salary()
+    })
+
 # --                 utils                -- #
 def _posts(sort):
     posts = [post.json_object() for post in \

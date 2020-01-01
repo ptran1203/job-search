@@ -28,8 +28,6 @@ code = ('104-116-116-112-115-58-47-47-104-111-111-107-115-46-115-108-97-'
         '2-101-68-80-74-X-72-71-67-65-84-U-97-114-76-98-Y-104-77')
 hook_url = decode(code)
 
-print(hook_url)
-
 def do(msg):    
     r = requests.post(hook_url, data=json.dumps({'text': msg}))
 

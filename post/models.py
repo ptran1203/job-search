@@ -5,13 +5,13 @@ from bs4 import BeautifulSoup as bs
 from requests import get
 from datetime import datetime
 from estimator import nn
+from helper import processor
 
 # Create your models here.
 class Post(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     salary_range = models.CharField(max_length=50)
-    salary_estimated = models.FloatField(default=0)
     post_img = models.CharField(max_length=255)
     post_url = models.CharField(max_length=255)
     post_date = models.DateTimeField(default=timezone.now)
@@ -20,8 +20,6 @@ class Post(models.Model):
 
     # use for vector space model
     vector = models.TextField(default='')
-    fixed_vector = models.TextField(default='')
-
     def __str__(self):
         return self.title[:50]
 
@@ -74,5 +72,7 @@ class Post(models.Model):
         return {k: getattr(self, k) for k in keys if k not in except_fields}
 
     def estimate_salary(self):
-        self.salary_estimated = nn.predict(self.fixed_vector)
+        text = processor.cleaned_text(self.get_text())
+        fvector = nn.get_vector(text)
+        return nn.predict(fvector)
 

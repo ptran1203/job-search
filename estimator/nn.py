@@ -8,8 +8,7 @@
 #     requirement
 #     description
     
-import json
-import requests
+import os
 from keras.models import model_from_json, Sequential, Model
 from keras.layers import (Dense, Dropout, Activation, Flatten,
                         MaxPooling2D,
@@ -21,6 +20,8 @@ import numpy as np
 
 MODEL = None
 VOCAB = None
+
+DIR = os.path.dirname(os.path.realpath(__file__))
 
 def neural_network(input_tensor):
     model = Sequential()
@@ -41,20 +42,20 @@ def neural_network(input_tensor):
 def save(model):
     print('Saving the model ...')
     # save model structure
-    with open('model.json', "w") as f:
+    with open(DIR + '/model.json', "w") as f:
         f.write(model.to_json())
     # save the weights and history
-    model.save_weights('model.h5')
+    model.save_weights(DIR + '/model.h5')
     print('done!')
 
 def load_model():
     global MODEL
-    json_file = open('model.json', 'r')
+    json_file = open(DIR + '/model.json', 'r')
     model = json_file.read()
     json_file.close()
     model = model_from_json(model)
     # load weights into new model
-    model.load_weights('model.h5')
+    model.load_weights(DIR + '/model.h5')
     MODEL = model
     MODEL._make_predict_function()
     return model
@@ -66,19 +67,30 @@ def predict(vector):
         load_model()
     
     if MODEL:
-        return MODEL.predict(vector)[0][0]
+        return MODEL.predict([vector])[0]
     
     backend.clear_session()
     load_model()
-    return MODEL.predict(vector)[0][0]
+    return MODEL.predict([vector])[0]
 
 def vocabulary():
     global VOCAB
     if VOCAB:
         return VOCAB
-    with open('vocab', 'r') as f:
+    with open(DIR + '/vocab', 'r') as f:
         VOCAB = f.read().split(',')
     return VOCAB
+
+def get_vector(text):
+    vocab = vocabulary()
+    vec = [0] * len(vocab)
+    for i, word in enumerate(vocab):
+        count = text.count(word)
+        if count > 0:
+            vec[i] += count
+    
+    print(len(vec))
+    return np.asarray(vec)
 
 def load_train():
     trainX = []
