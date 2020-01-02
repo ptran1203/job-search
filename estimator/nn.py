@@ -62,16 +62,13 @@ def load_model():
 
 
 def predict(vector):
-    if MODEL is None:
-        backend.clear_session()
-        load_model()
-    
+    vector = np.expand_dims(vector, axis=0)
     if MODEL:
-        return MODEL.predict([vector])[0]
+        return MODEL.predict(vector)[0][0]
     
     backend.clear_session()
     load_model()
-    return MODEL.predict([vector])[0]
+    return MODEL.predict(vector)[0][0]
 
 def vocabulary():
     global VOCAB
@@ -81,16 +78,19 @@ def vocabulary():
         VOCAB = f.read().split(',')
     return VOCAB
 
-def get_vector(text):
+def get_vector(text, isnp = True):
+    rate = 5
     vocab = vocabulary()
     vec = [0] * len(vocab)
     for i, word in enumerate(vocab):
         count = text.count(word)
         if count > 0:
             vec[i] += count
-    
-    print(len(vec))
-    return np.asarray(vec)
+
+    vec = [sum(vec[n:n + rate]) for n in range(0, len(vec), rate)]
+    if isnp:
+        return np.asarray(vec)
+    return ','.join([str(_) for _ in vec])
 
 def load_train():
     trainX = []

@@ -1,10 +1,11 @@
 
 import json
 import requests
-host = 'http://localhost:8000'
+from nn import get_vector
+host = 'http://iseek.herokuapp.com'
 
 def collect_data():
-    sql = ('SELECT *'
+    sql = ('SELECT post_post.content,post_post.title,post_post.salary_range'
         ' FROM post_post;')
     api_key = '1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8'
     url = host + '/api/rawsql?api_key={}&sql={}'.format(api_key, sql)
@@ -29,12 +30,13 @@ def parse():
     trainX = []
     trainY = []
     for d in data:
-        salary = d[3]
-        vec = d[7]
+        salary = d[2]
+        text = d[0] + ' ' + d[1]
+        vec = get_vector(text, False)
         if '$' in salary:
             trainX.append(vec)
             trainY.append(get_salary(salary))
-    
+
     with open('trainX', 'w') as f:
         f.write("-".join(trainX))
 
@@ -52,6 +54,6 @@ def load_train():
     return trainX, trainY
 
 
-collect_data()
+# collect_data()
 parse()
 load_train()

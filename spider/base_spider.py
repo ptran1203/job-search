@@ -23,7 +23,7 @@ extend_path = ['/skill/', '/cong-ty/', '/city/',
     'javascript', 'ruby', 'nodejs', 'android',
     'ios', 'mysql', 'c++', 'php']
 max_deep = 7
-# host_url = 'http://localhost:7555' 
+# host_url = 'http://localhost:8000' 
 host_url = 'http://iseek.herokuapp.com'
 digit_regex = re.compile(r'\d+')
 

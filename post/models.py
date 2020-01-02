@@ -74,5 +74,5 @@ class Post(models.Model):
     def estimate_salary(self):
         text = processor.cleaned_text(self.get_text())
         fvector = nn.get_vector(text)
-        return nn.predict(fvector)
+        return str(nn.predict(fvector))
 
