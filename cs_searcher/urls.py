@@ -19,6 +19,7 @@ from django.conf.urls import include
 from .views import (top_page,
                     search_view,
                     report,
+                    sql_console,
                     )
 
 
@@ -33,6 +34,7 @@ pages = [
     path('', top_page),
     path('search', search_view),
     path('report', report),
+    path('mysql', sql_console)
 ]
 
 handler404 = 'cs_searcher.views.handler404'

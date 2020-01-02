@@ -83,9 +83,16 @@ def get_posts_by_query(request):
     if request.GET.get('api_key', '') != API_KEY:
         return JsonResponse({'msg': 'bad request'})
     
-    sql = request.GET.get('sql', ('SELECT *'
-                                  'FROM post_post LIMIT 20;'))
+    sql = ('SELECT *'
+            'FROM post_post LIMIT 20;')
     
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        sql = body['sql']
+    if request.method == 'GET':
+        sql = request.GET.get('sql')
+
     cursor = connection.cursor()
     cursor.execute(sql)
     posts = cursor.fetchall()

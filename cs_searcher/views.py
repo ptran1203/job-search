@@ -38,6 +38,15 @@ def report(request):
         context={'records': records}
     )
 
+def sql_console(request):
+    access_key = request.GET.get('k')
+    if access_key != 'sad03121':
+        return render(request, '404.html')
+    return render(
+        request, 'sql.html',
+        context={}
+    )
+
 # error page
 def handler404(request, *args, **kwargs):
     return render(request, '404.html', status=404)
