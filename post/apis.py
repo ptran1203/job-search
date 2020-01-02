@@ -93,10 +93,13 @@ def get_posts_by_query(request):
     if request.method == 'GET':
         sql = request.GET.get('sql')
 
-    cursor = connection.cursor()
-    cursor.execute(sql)
-    posts = cursor.fetchall()
-    return JsonResponse(posts, safe=False)
+    try:
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        posts = cursor.fetchall()
+        return JsonResponse(posts, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
 
 
 def estimate_salary(request, id):
