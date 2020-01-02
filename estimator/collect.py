@@ -51,5 +51,7 @@ def load_train():
 
     return trainX, trainY
 
-# parse()
+
+collect_data()
+parse()
 load_train()
