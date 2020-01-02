@@ -15,8 +15,11 @@ def _size(file_path):
     return os.stat(file_path).st_size or 0
 
 def store(request, data):
-    with open(_path(request), 'w') as f:
-        json.dump(data, f)
+    try:
+        with open(_path(request), 'w') as f:
+            json.dump(data, f)
+    except:
+        return {}
 
 def get(request):
     try:
