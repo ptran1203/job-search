@@ -51,7 +51,7 @@ class Post(models.Model):
         return self.create_date.date()
 
     def get_text(self):
-        return self.title + self.content
+        return self.title + ' ' + self.content
 
     def set_vector(self, vector):
         """
@@ -72,7 +72,6 @@ class Post(models.Model):
         return {k: getattr(self, k) for k in keys if k not in except_fields}
 
     def estimate_salary(self):
-        text = processor.cleaned_text(self.get_text())
-        fvector = nn.get_vector(text)
+        fvector = nn.get_vector(self.get_text())
         return str(nn.predict(fvector))
 
