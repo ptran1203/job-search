@@ -9,19 +9,14 @@ import re
 
 
 # -------------------- constants --------------------
-user_agents = [
-    'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-    'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Safari/537.36',
-    'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-]
-default_img = 'https://aliceasmartialarts.com/wp-content' \
-            '/uploads/2017/04/default-image.jpg'
 crawled = []
 disallow_path = ['/skill/', '/cong-ty/', '/city/', '/signin/']
 extend_path = ['/skill/', '/cong-ty/', '/city/',
 'python','c++', 'asp', 'html', 'java',
     'javascript', 'ruby', 'nodejs', 'android',
-    'ios', 'mysql', 'c++', 'php']
+    'ios', 'mysql', 'c++', 'php', 
+    '-jd' #vietnamwork
+    ]
 max_deep = 7
 # host_url = 'http://localhost:8000' 
 host_url = 'http://iseek.herokuapp.com'
@@ -55,17 +50,12 @@ class BaseSpider:
     @staticmethod
     def rand_headers():
         return {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
-        return {
-            'User-Agent': user_agents[
-                randrange(len(user_agents))
-            ]
-        }
+
+
     @staticmethod
     def extract_img(item):
-        img = item.find('img')
-        if img:
-            return img.get('src')
-        return default_img
+        return ""
+
 
     @staticmethod
     def bsfind(soup, tag, classes):

@@ -1,22 +1,22 @@
 
 {
     "topitworks": {
-        "base_url": "https://www.topitworks.com/vi/viec-lam",
+        "base_url": "https://www.vietnamworks.com/job-channel/35",
         "tag": {
             "base": "div",
-            "title": "h3",
+            "title": "h1",
             "content": "div",
-            "salary": "strong",
-            "address": "p",
+            "salary": "span",
+            "address": "div",
             "post_date": "span"
         },
         "classes": {
-            "base": ["job-detail-data-wrapper"],
-            "title": ["job-name"],
-            "content": ["read-more-content"],
-            "salary": ["hidden-xs"],
-            "address": ["company-location"],
-            "post_date": ["job-post-day"]
+            "base": ["page-foreground"],
+            "title": ["job-title"],
+            "content": ["tab-main-content"],
+            "salary": ["salary"],
+            "address": ["location-name"],
+            "post_date": ["content"]
         }
     },
     "itviec": {
