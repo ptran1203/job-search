@@ -60,7 +60,7 @@ def clean(request):
     """
     date_15daysago = timezone.now() - datetime.timedelta(days=15)
     count = Post.objects.filter(post_date__lt=date_15daysago).count()
-    Post.objects.filter(post_date__lt=date_15daysago).delete()
+    # Post.objects.filter(post_date__lt=date_15daysago).delete()
     slack.send('deleted %s posts' %(count))
     return JsonResponse({'deleted': count})
 

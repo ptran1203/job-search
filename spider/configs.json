@@ -19,6 +19,25 @@
             "post_date": ["content"]
         }
     },
+    "topcv": {
+        "base_url": "https://www.topcv.vn/tim-viec-lam-python",
+        "tag": {
+            "base": "div",
+            "title": "h1",
+            "content": "div",
+            "salary": "span",
+            "address": "div",
+            "post_date": "span"
+        },
+        "classes": {
+            "base": [""],
+            "title": ["job-title"],
+            "content": ["col-md-8"],
+            "salary": ["salary"],
+            "address": ["text-dark-gray"],
+            "post_date": ["content"]
+        }
+    },
     "itviec": {
         "base_url": "https://itviec.com/viec-lam-it",
         "tag": {

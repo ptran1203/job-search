@@ -43,6 +43,7 @@ class BaseSpider:
 
     @staticmethod
     def is_accept_url(url):
+        return '-jd' in url
         return '/vi/viec-lam/' in url and not \
             any(_ in url for _ in disallow_path) and \
             url.count('/') == 5
@@ -139,6 +140,7 @@ class BaseSpider:
                 and _url not in crawled:
                 crawled.append(_url)
                 self.crawl(_url)
+
 
     @staticmethod
     def filter_salary(salary):

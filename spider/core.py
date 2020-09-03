@@ -1,4 +1,5 @@
 from base_spider import BaseSpider
+from indeed_spider import IndeedSpider
 import json
 import threading
 import time
@@ -8,15 +9,19 @@ import sys
 IS_PROD = True
 HOST_URL = 'https://iseek.herokuapp.com/' if IS_PROD else 'http://localhost:8000/'
 
-class TopItWorkSpider(BaseSpider):
+class TopCvSpider(BaseSpider):
     @staticmethod
     def get_post_date(time_str):
         pos = time_str.lower().find('đã')
         if not pos:
             return False
 
-        return super(TopItWorkSpider, TopItWorkSpider) \
+        return super(TopCvSpider, TopCvSpider) \
             .get_post_date(time_str[pos:])
+
+    @staticmethod
+    def is_accept_url(url):
+        return '/viec-lam/' in url
 
 class ItViecSpider(BaseSpider):
     def handle(self, base_url):
@@ -38,6 +43,7 @@ class ItViecSpider(BaseSpider):
         return '/viec-lam-it/' in url
 
 
+
 def report(running_time, crawled_pages, src_type):
     r = requests.post(HOST_URL + 'api/report/store',
                         data=json.dumps({
@@ -45,14 +51,14 @@ def report(running_time, crawled_pages, src_type):
                             'crawled_pages': crawled_pages,
                             'src_type': src_type
                         }))
-    print(r)
 
 def crawl_in_thread(op):
-    name = 'topitwork' if op == 1 else 'itviec'
     start = time.time()
-    crawled_pages = TopItWorkSpider(configs['topitworks']).start() \
-                    if op == 1 else \
-                    ItViecSpider(configs['itviec']).start()
+    if op == 1:
+        crawled_pages = IndeedSpider().start()
+    else:
+        crawled_pages = ItViecSpider(configs['itviec']).start()
+
     running_time = round(time.time() - start, 2)
     report(running_time, crawled_pages, 1)
 
@@ -62,7 +68,7 @@ if __name__ == "__main__":
     sites = sys.argv[1:]
     if sites == []:
         # default
-        sites = ['topitworks', 'itviec']
+        sites = ['topcv', 'itviec1']
 
     configs = {}
     # run python spider/core.py
@@ -72,10 +78,8 @@ if __name__ == "__main__":
     try:
         t1 = None
         t2 = None
-        if 'topitworks' in sites:
-            t1 = threading.Thread(target=crawl_in_thread, args=(1,), kwargs={})
-        if 'itviec' in sites:
-            t2 = threading.Thread(target=crawl_in_thread, args=(2,), kwargs={})
+        t1 = threading.Thread(target=crawl_in_thread, args=(1,), kwargs={})
+        t2 = threading.Thread(target=crawl_in_thread, args=(2,), kwargs={})
         
         if t1 and t2:
             t1.start()
