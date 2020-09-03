@@ -1,7 +1,6 @@
 from post.models import Post
 from helper import processor
 from django.db import models
-from estimator import nn
 import re
 import math
 

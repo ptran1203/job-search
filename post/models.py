@@ -4,7 +4,6 @@ from django.utils import timezone
 from bs4 import BeautifulSoup as bs
 from requests import get
 from datetime import datetime
-from estimator import nn
 from helper import processor
 
 # Create your models here.
@@ -72,6 +71,7 @@ class Post(models.Model):
         return {k: getattr(self, k) for k in keys if k not in except_fields}
 
     def estimate_salary(self):
-        fvector = nn.get_vector(self.get_text())
-        return str(nn.predict(fvector))
+        return 'Fixing...'
+        # fvector = nn.get_vector(self.get_text())
+        # return str(nn.predict(fvector))
 
