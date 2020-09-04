@@ -3,7 +3,8 @@ from helper import processor
 from django.db import models
 import re
 import math
-
+from models.word2vec import embedding
+from models.data_collection import clean_text
 # Django models
 class Vocabulary(models.Model):
     data = models.TextField()
@@ -44,19 +45,12 @@ class Searcher:
         self.docs = docs
         self.vocab = vocab
 
-    def init_vector(self, terms):
-        vector = [0] * len(self.vocab)
-        for term in terms:
-            try:
-                 vector[self.vocab.index(term)] += 1
-            except ValueError:
-                print("can not response query: ", term)
+    def init_vector(self, query):
+        return embedding.text2vec(clean_text(query))
 
-        return vector
-
-    def search(self, terms):
+    def search(self, query):
         res = {}
-        qvector = self.init_vector(terms)
+        qvector = self.init_vector(query)
         # print([x for x in qvector if x != 0])
         for doc in self.docs:
             res[doc.id] = processor.cosine(doc.get_vector(), qvector)

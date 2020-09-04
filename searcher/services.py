@@ -13,7 +13,7 @@ def search_result(query):
     vocab = Vocabulary.objects.all()[0].get()
     searcher = Searcher(posts, vocab)
 
-    doc_ids = searcher.search(terms)
+    doc_ids = searcher.search(query)
     posts = Post.objects.filter(pk__in=doc_ids)
 
     upsert_keywords(query)

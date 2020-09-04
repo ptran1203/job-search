@@ -25,7 +25,7 @@ def buildVS(request):
             post.set_vector(vector)
         return JsonResponse({
             "status": "Done",
-            "time": running_time,
+            # "time": running_time,
             })
     except Exception as e:
         slack.send(str(e))
