@@ -1,6 +1,5 @@
 import gensim.models
-
-MODEL = None
+import numpy as np
 
 class Embedding:
     def __init__(self):

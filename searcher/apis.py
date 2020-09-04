@@ -21,11 +21,10 @@ def buildVS(request):
         now = time.time()
         posts = Post.objects.all()
         for post in posts:
-            vector = clean_text(post.get_text())
+            vector = embedding.text2vec(clean_text(post.get_text()))
             post.set_vector(vector)
         return JsonResponse({
             "status": "Done",
-            "size": V.size,
             "time": running_time,
             })
     except Exception as e:
