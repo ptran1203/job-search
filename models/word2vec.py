@@ -4,7 +4,7 @@ MODEL = None
 
 class Embedding:
     def __init__(self):
-        self.model = gensim.models.Word2Vec.load('storage/word2vec_model')
+        self.model = gensim.models.Word2Vec.load('models/storage/word2vec_model')
 
 
     def word2vec(self, word):
