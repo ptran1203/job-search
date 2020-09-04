@@ -1,5 +1,7 @@
 import unidecode
 from nltk.tokenize import word_tokenize
+import nltk
+nltk.download('punkt')
 
 host = 'http://iseek.herokuapp.com'
 
