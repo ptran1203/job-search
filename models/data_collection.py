@@ -1,3 +1,5 @@
+import unidecode
+
 host = 'http://iseek.herokuapp.com'
 
 def collect_data():
