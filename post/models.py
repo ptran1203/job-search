@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup as bs
 from requests import get
 from datetime import datetime
 from helper import processor
+from models.word2vec import embedding
+from models.salary_prediction import salary_predictor
 
 # Create your models here.
 class Post(models.Model):
@@ -70,8 +72,9 @@ class Post(models.Model):
                 'salary_range','post_url','post_date','address']
         return {k: getattr(self, k) for k in keys if k not in except_fields}
 
+
     def estimate_salary(self):
-        return 'Fixing...'
-        # fvector = nn.get_vector(self.get_text())
-        # return str(nn.predict(fvector))
+        fvector = np.array([float(i) for i in self.vector.split(",")])
+        return str(salary_predictor.predict(fvector))
+
 

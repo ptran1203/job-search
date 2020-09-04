@@ -1,6 +1,6 @@
 from post.models import Post
 from helper import processor
-from .models import Searcher, Keywords, Vocabulary, VectorSpace
+from .models import Searcher, Keywords, Vocabulary
 from django.db.models import Q
 from django.contrib.humanize.templatetags import humanize
 

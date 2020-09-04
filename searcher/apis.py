@@ -12,16 +12,17 @@ from .services import search_result
 import constant
 from cache import cache
 import time
+from models.word2vec import embedding
+from models.data_collection import clean_text
 
 
 def buildVS(request):
     try:
         now = time.time()
-        V = VectorSpace()
-        running_time = round(time.time() - now, 2)
-        slack.send('build vectorspace successfully, size =%s, done in %s sec' \
-                                %(str(V.size), running_time))
-
+        posts = Post.objects.all()
+        for post in posts:
+            vector = clean_text(post.get_text())
+            post.set_vector(vector)
         return JsonResponse({
             "status": "Done",
             "size": V.size,
