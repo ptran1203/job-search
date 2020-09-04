@@ -15,8 +15,9 @@ class Embedding:
     def text2vec(self, text):
         if type(text) is list:
             text = " ".join(text)
-        ar = np.array([word2vec(self.model, t) for t in text.split(" ")])
+        ar = np.array([self.word2vec(t) for t in text.split(" ")])
         return np.mean(ar, axis=0)
+
 
     @staticmethod
     def similarity(text1, text2):
