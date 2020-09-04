@@ -1,4 +1,5 @@
 import unidecode
+from nltk.tokenize import word_tokenize
 
 host = 'http://iseek.herokuapp.com'
 
