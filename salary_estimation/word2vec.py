@@ -4,7 +4,9 @@ import numpy as np
 
 class Embedding:
     def __init__(self):
-        self.model = gensim.models.Word2Vec.load("./storage/word2vec_model")
+        self.model = gensim.models.Word2Vec.load(
+            "./salary_estimation/storage/word2vec_model"
+        )
 
     def word2vec(self, word):
         if word in self.model.wv.vocab:
