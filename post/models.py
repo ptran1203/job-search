@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as bs
 from requests import get
 from datetime import datetime
 from helper import processor
-from models.word2vec import embedding
+from salary_estimation.word2vec import embedding
 from salary_estimation.salary_prediction import salary_estimator
 import numpy as np
 

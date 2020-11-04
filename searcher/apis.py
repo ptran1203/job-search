@@ -1,9 +1,6 @@
 from django.shortcuts import render
 from post.models import Post
-from django.http import (
-    HttpResponseRedirect, Http404,
-    JsonResponse, HttpResponse
-)
+from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Keywords, VectorSpace
 from django.core import serializers
@@ -12,8 +9,8 @@ from .services import search_result
 import constant
 from cache import cache
 import time
-from models.word2vec import embedding
-from models.data_collection import clean_text
+from salary_estimation.word2vec import embedding
+from salary_estimation.data_collection import clean_text
 
 
 def buildVS(request):
@@ -23,21 +20,20 @@ def buildVS(request):
         for post in posts:
             vector = embedding.text2vec(clean_text(post.get_text()))
             post.set_vector(vector)
-        return JsonResponse({
-            "status": "Done",
-            # "time": running_time,
-            })
+        return JsonResponse(
+            {
+                "status": "Done",
+                # "time": running_time,
+            }
+        )
     except Exception as e:
         slack.send(str(e))
-        return JsonResponse({
-            "status": "Error!",
-            "msg": str(e),
-            })
+        return JsonResponse({"status": "Error!", "msg": str(e),})
 
 
 def search(request):
-    query = request.GET.get('q')
-    page = int(request.GET.get('page') or 0)
+    query = request.GET.get("q")
+    page = int(request.GET.get("page") or 0)
     if not query:
         return HttpResponse("no query")
 
@@ -54,16 +50,14 @@ def search(request):
 
     return JsonResponse(pagination.sub(data, page), safe=False)
 
+
 def keywords(request):
-    is_string = request.GET.get('is_string')
+    is_string = request.GET.get("is_string")
     # sort_type= str(request.GET.get('sort_type') or 1)
-    query_set = Keywords.objects.all().order_by('-num_of_searches')
+    query_set = Keywords.objects.all().order_by("-num_of_searches")
     if not is_string:
-        return JsonResponse([
-            item.json_object() for item in query_set
-        ], safe=False)
-    return JsonResponse([
-        item.word for item in query_set
-    ], safe=False)
+        return JsonResponse([item.json_object() for item in query_set], safe=False)
+    return JsonResponse([item.word for item in query_set], safe=False)
+
 
 # gg api key: AIzaSyAIlPTH75veCC1TA7ajzt6JDxk3iIonTOc

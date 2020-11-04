@@ -3,18 +3,20 @@ from helper import processor
 from django.db import models
 import re
 import math
-from models.word2vec import embedding
-from models.data_collection import clean_text
+from salary_estimation.word2vec import embedding
+from salary_estimation.data_collection import clean_text
+
 # Django models
 class Vocabulary(models.Model):
     data = models.TextField()
     count = models.IntegerField(default=0)
 
     def get(self):
-        return self.data.split(',')
-    
+        return self.data.split(",")
+
     def __str__(self):
         return str(self.count)
+
 
 class Keywords(models.Model):
     """
@@ -23,7 +25,8 @@ class Keywords(models.Model):
     status_type:
         0 -> not exist in vocabulary
         1 -> exist in vocabulary1
-    """ 
+    """
+
     word = models.CharField(max_length=100)
     num_of_searches = models.IntegerField(default=0)
     status_type = models.IntegerField(default=0)
@@ -33,10 +36,10 @@ class Keywords(models.Model):
 
     def json_object(self):
         return {
-            'id': self.pk,
-            'word': self.word,
-            'num_of_searches': self.num_of_searches,
-            'status_type': self.status_type
+            "id": self.pk,
+            "word": self.word,
+            "num_of_searches": self.num_of_searches,
+            "status_type": self.status_type,
         }
 
 
@@ -59,6 +62,7 @@ class Searcher:
         # print(doc_ids)
         return [doc[0] for doc in doc_ids if doc[1] > 0.0]
 
+
 class VectorSpace:
     def __init__(self):
         """
@@ -77,8 +81,7 @@ class VectorSpace:
         posts = Post.objects.all()
         vocab = set()
         for post in posts:
-            [vocab.add(_) for _ in \
-                processor.cleaned_text(post.get_text())]
+            [vocab.add(_) for _ in processor.cleaned_text(post.get_text())]
 
         return list(vocab), posts
 
@@ -102,7 +105,7 @@ class VectorSpace:
                         key[post.id] = 1
                 except Exception as e:
                     print(e)
-        
+
         return inverted_indexes
 
     @staticmethod
@@ -116,8 +119,7 @@ class VectorSpace:
             result[term] = len(idx)
         # log base 2 of size/1 + count
 
-        return {term: math.log(size / (1 + count), 2) \
-                         for term, count in result.items()}
+        return {term: math.log(size / (1 + count), 2) for term, count in result.items()}
 
     @staticmethod
     def _tfidf(vector, idfs):
@@ -139,17 +141,15 @@ class VectorSpace:
         idf_map = self._idfs(inverted_indexes, len(vocab))
 
         # set tf in vector
-        post_map = {p.id:[0]*len(vocab) for p in posts}
+        post_map = {p.id: [0] * len(vocab) for p in posts}
         for term, post_count in inverted_indexes.items():
             for post_id, count in post_count.items():
                 tf = 1 + math.log(count) if count > 0 else 0
-                post_map[post_id][vocab.index(term)] = \
-                        round(tf * idf_map[term], 2)
+                post_map[post_id][vocab.index(term)] = round(tf * idf_map[term], 2)
 
         for post in posts:
             post.set_vector(post_map[post.id])
 
         Vocabulary.objects.all().delete()
-        Vocabulary.objects.create(data=','.join(vocab),
-                                    count=len(vocab))
+        Vocabulary.objects.create(data=",".join(vocab), count=len(vocab))
         return len(post_map)

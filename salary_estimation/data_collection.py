@@ -4,19 +4,19 @@ import nltk
 import requests
 import json
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
 import pickle
 from word2vec import embedding
 from nltk.tokenize import word_tokenize
 from sklearn.ensemble import RandomForestRegressor
 
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+# import pandas as pd
 
 API_KEY = "1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8"
 SALARY_UNITS = ["$", "USD", "TRIỆU", "TRIEU"]
 SALARY_DETECT_TERM = ["SALARY", "LƯƠNG", "LUONG"]
-# nltk.download("punkt")
+nltk.download("punkt")
 
 host = "http://iseek.herokuapp.com"
 
