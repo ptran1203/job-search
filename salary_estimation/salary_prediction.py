@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-from word2vec import embedding
+from salary_estimation.word2vec import embedding
 
 
 class salaryEsimator:

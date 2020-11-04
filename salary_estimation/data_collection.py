@@ -5,7 +5,7 @@ import requests
 import json
 import numpy as np
 import pickle
-from word2vec import embedding
+from salary_estimation.word2vec import embedding
 from nltk.tokenize import word_tokenize
 from sklearn.ensemble import RandomForestRegressor
 
