@@ -6,7 +6,8 @@ from requests import get
 from datetime import datetime
 from helper import processor
 from models.word2vec import embedding
-from models.salary_prediction import salary_predictor
+from salary_estimation.salary_prediction import salary_estimator
+import numpy as np
 
 # Create your models here.
 class Post(models.Model):
@@ -16,11 +17,12 @@ class Post(models.Model):
     post_img = models.CharField(max_length=255)
     post_url = models.CharField(max_length=255)
     post_date = models.DateTimeField(default=timezone.now)
-    address = models.CharField(max_length=150, default='empty')
+    address = models.CharField(max_length=150, default="empty")
     create_date = models.DateTimeField(default=timezone.now)
 
     # use for vector space model
-    vector = models.TextField(default='')
+    vector = models.TextField(default="")
+
     def __str__(self):
         return self.title[:50]
 
@@ -30,20 +32,21 @@ class Post(models.Model):
         Create new post and save
         """
         # prevent duplicate
-        if cls.objects.filter(post_url=obj['post_url']).exists():
+        if cls.objects.filter(post_url=obj["post_url"]).exists():
             return
         # convert time
         post_date = timezone.make_aware(
-            datetime.strptime(obj['post_date'], "%m/%d/%Y - %H:%M:%S"))
+            datetime.strptime(obj["post_date"], "%m/%d/%Y - %H:%M:%S")
+        )
 
         new = cls(
-            title = obj['title'][:255],
-            content = obj['content'],
-            post_img = obj['post_img'][:255],
-            post_url = obj['post_url'][:255],
-            salary_range = obj['salary_range'],
-            post_date = post_date,
-            address = obj['address'][:150]
+            title=obj["title"][:255],
+            content=obj["content"],
+            post_img=obj["post_img"][:255],
+            post_url=obj["post_url"][:255],
+            salary_range=obj["salary_range"],
+            post_date=post_date,
+            address=obj["address"][:150],
         )
         new.save()
         return new
@@ -52,29 +55,37 @@ class Post(models.Model):
         return self.create_date.date()
 
     def get_text(self):
-        return self.title + ' ' + self.content
+        return self.title + " " + self.content
 
     def set_vector(self, vector):
         """
         set vector and save it
         """
-        self.vector = ','.join([str(_) for _ in vector])
+        self.vector = ",".join([str(_) for _ in vector])
         self.save()
 
     def get_vector(self):
         try:
-            return [float(_) for _ in self.vector.split(',')]
+            return [float(_) for _ in self.vector.split(",")]
         except:
             return []
 
     def json_object(self, except_fields=[]):
-        keys = ['id','title','content','post_img',
-                'salary_range','post_url','post_date','address']
+        keys = [
+            "id",
+            "title",
+            "content",
+            "post_img",
+            "salary_range",
+            "post_url",
+            "post_date",
+            "address",
+        ]
         return {k: getattr(self, k) for k in keys if k not in except_fields}
-
 
     def estimate_salary(self):
         fvector = np.array([float(i) for i in self.vector.split(",")])
-        return str(salary_predictor.predict(fvector))
-
-
+        mi, ma = salary_estimator.predict(fvector)[0]
+        if mi > ma:
+            ma, mi = mi, ma
+        return "{}$ - {}$".format(round(mi), round(ma))

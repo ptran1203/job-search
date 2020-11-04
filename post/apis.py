@@ -10,6 +10,7 @@ import json
 import datetime
 from helper import pagination
 from constant import API_KEY
+from salary_estimation.salary_prediction import salary_estimator
 
 sort_types = {
     1: "-post_date",
@@ -106,6 +107,11 @@ def get_posts_by_query(request):
 def estimate_salary(request, id):
     post = Post.objects.get(pk=id)
     return JsonResponse({"salary": post.estimate_salary()})
+
+
+def estimate_salary_text(request):
+    text = request.body.decode("utf-8")
+    return JsonResponse({"salary": salary_estimator.predict_from_text(text)})
 
 
 # --                 utils                -- #
