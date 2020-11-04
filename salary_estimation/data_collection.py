@@ -7,8 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import pickle
 from word2vec import embedding
 from nltk.tokenize import word_tokenize
+from sklearn.ensemble import RandomForestRegressor
+
 
 API_KEY = "1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8"
 SALARY_UNITS = ["$", "USD", "TRIỆU", "TRIEU"]
@@ -203,48 +206,14 @@ if __name__ == "__main__":
     # sns.displot(train_y[:, 1], kind="kde")
     # plt.show()
 
-    from sklearn.ensemble import RandomForestRegressor
-
     model = RandomForestRegressor(max_depth=2)
     model.fit(train_x, train_y)
     score = model.score(train_x, train_y)
     print(score)
 
-    test_txt = """
-    Top 3 Reasons To Join Us
-Building super-app for e-businesses globally
-Attractive incentive program
-Performance review any time
-Job Description
-Design and build data pipeline that consume large dimensional structured, unstructured data.
-Writes ETL processes, designs database systems and deploys/develops tools for real-time and offline analytic processing.
-Collaborate and understand the requirements from Data Analyst/ Business Users and turn into technical insight.
-Research new technologies/ methodologies which can be applied to improve business performance.
-Your Skills and Experience
-At least 2 years of experience in building ETL pipeline, Data Warehouse
-Experience in processing data in DBMS (Mongo, MySQL, SQL Server)
-Experience with SQL, Python, bash shell scripts
-Experience with Spark and its features: Spark SQL, Spark streaming, structured streaming.
-Experience with Linux servers
-Nice - to - have: Experience in PHP (Laravel Framework)
-E-commerce experience is a plus
-Why You'll Love Working Here
-Life at Epsilo
+    # pred = model.predict(np.expand_dims(embedding.text2vec(test_txt), axis=0))
+    # print(pred * max_salary)
 
-Health care (Aon Insurance), health check, full social, health & employment insurances
-Activities: Happy hour, sport content, company trip, team building, year-end party
-Award: the best employee
-Training: on the job training, coaching
-Allowance: parking, phone card, business expense
-Others: Laptop, T-Shirts, handbook, door gifts
-14 annual leaves per year
-Competitive salary range
-Working hour at Epsilo
-
-Venue: District 1, HCMC
-Mon - Fri
-9h00 - 18h30, and break time 1h30
-    """
-    pred = model.predict(np.expand_dims(embedding.text2vec(test_txt), axis=0))
-    print(pred * max_salary)
-
+    filename = "./model.pkl"
+    pickle.dump(model, open(filename, "wb"))
+    pickle.dump(max_salary, open("./maxval.pkl", "wb"))
