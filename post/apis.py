@@ -111,7 +111,11 @@ def estimate_salary(request, id):
 
 def estimate_salary_text(request):
     text = request.body.decode("utf-8")
-    return JsonResponse({"salary": salary_estimator.predict_from_text(text)})
+    mi, ma = salary_estimator.predict_from_text(text)[0]
+    if mi > ma:
+        mi, ma = ma, mi
+
+    return JsonResponse({"min": mi, "max": ma})
 
 
 # --                 utils                -- #
