@@ -49,7 +49,3 @@ class SalaryPredictor:
 
     def predict(self, feat_vec):
         return self.model.predict(feat_vec)[0][0]
-
-
-# export
-salary_predictor = SalaryPredictor()
