@@ -5,8 +5,8 @@ from salary_estimation.word2vec import embedding
 
 class salaryEsimator:
     def __init__(self):
-        self.model = pickle.load(open("./model.pkl", "rb"))
-        self.max_val = pickle.load(open("./maxval.pkl", "rb"))
+        self.model = pickle.load(open("./salary_estimation/model.pkl", "rb"))
+        self.max_val = pickle.load(open("./salary_estimation/maxval.pkl", "rb"))
 
     def predict(self, feat):
         if len(feat.shape) == 1:
