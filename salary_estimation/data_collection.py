@@ -49,6 +49,9 @@ def to_float(val):
 
 
 def _cleaned_num(val):
+    if "%" in val:
+        return ""
+
     return val.replace(".", "").replace(",", "")
 
 
@@ -71,10 +74,10 @@ def to_usd(val, vnd, scale):
 
 
 def get_scale_factor(val):
-    if "TRIỆU" in val.upper() or "TRIEU" in val.upper():
+    if "TRIỆU" in val.upper() or "TRIEU" in val.upper() or re.search(r"[0-9]+M", val):
         return 1e6
 
-    if re.search(r"[0-9]+K", val) or re.search(r"[0-9]+M", val):
+    if re.search(r"[0-9]+K", val):
         return 1e3
 
     return 1
@@ -89,14 +92,14 @@ def get_salary(val):
         [c in val.upper() for c in {"VND", "VNĐ", "TRIỆU", "TRIEU"}]
     )
 
-    if not is_vnd and scale == 1e3:
+    if not is_vnd and scale == 1e6:
         """
         UPTO 20M/tháng.
         Lương thỏa thuận. Từ 20M – 30M/tháng.
         """
         is_vnd = True
 
-    vals = re.findall(r"[0-9.,]+", val)
+    vals = re.findall(r"[0-9.,]+%?", val)
 
     vals = list(filter(lambda x: _cleaned_num(x) != "", vals))
 
@@ -146,10 +149,13 @@ def _get_salaty_from_content(content):
                 #         content[idx : idx + 50] + "\n{}\n---------\n".format(salary)
                 #     )
             else:
-                # with open("have_salary.txt", "a") as f:
-                #     f.write(
-                #         content[idx : idx + 50] + "\n{}\n---------\n".format(salary)
-                #     )
+                with open("have_salary.txt", "a") as f:
+                    f.write(
+                        content[idx : idx + 50]
+                        + "\n{} {}\n---------\n".format(
+                            salary, get_scale_factor(content[idx : idx + 50])
+                        )
+                    )
                 return salary
 
     return False
@@ -244,10 +250,10 @@ if __name__ == "__main__":
     print("max_salary", max_salary)
     train_y = train_y / max_salary
 
-    # model = RandomForestRegressor(max_depth=3)
-    # model.fit(train_x, train_y)
-    # score = model.score(train_x, train_y)
-    # print(score)
+    model = RandomForestRegressor(max_depth=3)
+    model.fit(train_x, train_y)
+    score = model.score(train_x, train_y)
+    print(score)
 
     # pred = model.predict(np.expand_dims(embedding.text2vec(test_txt), axis=0))
     # print(pred * max_salary)
