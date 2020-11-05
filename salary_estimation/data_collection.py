@@ -5,9 +5,13 @@ import requests
 import json
 import numpy as np
 import pickle
-from salary_estimation.word2vec import embedding
 from nltk.tokenize import word_tokenize
 from sklearn.ensemble import RandomForestRegressor
+
+try:
+    from salary_estimation.word2vec import embedding
+except ImportError:
+    from word2vec import embedding
 
 # import matplotlib.pyplot as plt
 # import seaborn as sns
@@ -151,27 +155,47 @@ def _get_salaty_from_content(content):
     return False
 
 
+def get_year_exp(description):
+    keywords = [
+        "years of experience",
+        "year of experience",
+        "years experience",
+        "year experience",
+        "năm kinh nghiệm",
+        "kinh nghiệm yêu cầu",
+    ]
+    for k in keywords:
+        idx = description.find(k)
+        if idx != -1:
+            truncated = description[idx - 15 : idx + len(k) + 15].replace("\n", " ")
+            rex = r"[0-9]+-?[0-9]+\+? {}".format(k.split(" ")[0])
+            numbers = re.findall(rex, truncated)
+            if numbers:
+                # print(truncated, numbers)
+                return numbers
+
+
 def parse(data, parse_all=True):
     trainX = []
     trainY = []
     for d in data:
-        salary = d[2] or ""
-        text = d[0] + " " + d[1]
-        # vec = get_vector(text, False)
+        desc, title, salary = d
+        text = title + " " + desc
         salary = get_salary(salary)
         if not salary:
-            if any(c in d[1].upper() for c in SALARY_UNITS):
-                salary = get_salary(d[1])
+            if any(c in title.upper() for c in SALARY_UNITS):
+                salary = get_salary(title)
 
         if not salary:
-            salary = _get_salaty_from_content(d[0])
+            salary = _get_salaty_from_content(desc)
 
         if salary:
             trainX.append(clean_text(text))
             trainY.append(salary)
 
-        if salary and salary[1] > 400000.0:
-            print(d[1], salary)
+        exp = get_year_exp(desc)
+        if exp and salary:
+            print(exp, salary, title)
 
     return trainX, trainY
 
@@ -184,36 +208,50 @@ def to_embedding(texts):
     return np.array(r)
 
 
-if __name__ == "__main__":
-    # data = collect_data()
-    # with open("./temp.json", "w") as f:
-    #     json.dump(data, f)
+def load_data(get_new=True):
+    new_data = []
+    if get_new:
+        print("Fetch new data...")
+        new_data = collect_data()
 
-    with open("./temp.json", "r") as f:
+    with open("./salary_estimation/storage/temp.json", "r") as f:
         data = json.load(f)
+
+    descriptions = set([d[0][:100] for d in data])
+    count = 0
+    for d in new_data:
+        if d[0][:100] not in descriptions:
+            data.append(d)
+            count += 1
+
+    print("Total: {}, {} new".format(len(data), count))
+
+    if count:
+        with open("./salary_estimation/storage/temp.json", "w") as f:
+            json.dump(data, f)
+
+    return data
+
+
+if __name__ == "__main__":
+    data = load_data(False)
     train_x, train_y = parse(data)
 
     train_x = to_embedding(train_x)
     train_y = np.array(train_y)
-    # np.save("./temp_y.npy", train_y)
-    # train_y = np.load("./temp_y.npy")
-    print(train_y.shape)
-    print(train_x.shape)
+
     max_salary = np.max(train_y)
     print("max_salary", max_salary)
     train_y = train_y / max_salary
-    # sns.displot(train_y[:, 0], kind="kde")
-    # sns.displot(train_y[:, 1], kind="kde")
-    # plt.show()
 
-    model = RandomForestRegressor(max_depth=2)
-    model.fit(train_x, train_y)
-    score = model.score(train_x, train_y)
-    print(score)
+    # model = RandomForestRegressor(max_depth=3)
+    # model.fit(train_x, train_y)
+    # score = model.score(train_x, train_y)
+    # print(score)
 
     # pred = model.predict(np.expand_dims(embedding.text2vec(test_txt), axis=0))
     # print(pred * max_salary)
 
-    filename = "./model.pkl"
-    pickle.dump(model, open(filename, "wb"))
-    pickle.dump(max_salary, open("./maxval.pkl", "wb"))
+    # filename = "./salary_estimation/storage/model.pkl"
+    # pickle.dump(model, open(filename, "wb"))
+    # pickle.dump(max_salary, open("./salary_estimation/storage/maxval.pkl", "wb"))
