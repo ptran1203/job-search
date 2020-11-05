@@ -13,9 +13,6 @@ try:
 except ImportError:
     from word2vec import embedding
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# import pandas as pd
 
 API_KEY = "1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8"
 SALARY_UNITS = ["$", "USD", "TRIỆU", "TRIEU"]
@@ -92,6 +89,9 @@ def get_salary(val):
         [c in val.upper() for c in {"VND", "VNĐ", "TRIỆU", "TRIEU"}]
     )
 
+    if scale == 1e6:
+        print("-----> ", val.replace("\n", " "))
+
     if not is_vnd and scale == 1e6:
         """
         UPTO 20M/tháng.
@@ -141,7 +141,7 @@ def _get_salaty_from_content(content):
     for term in SALARY_DETECT_TERM:
         idx = content.upper().find(term)
         if idx != -1:
-            salary = get_salary(content[idx : idx + 50])
+            salary = get_salary(content[idx : idx + 35])
             if not salary:
                 pass
                 # with open("content.txt", "a") as f:
@@ -151,14 +151,23 @@ def _get_salaty_from_content(content):
             else:
                 with open("have_salary.txt", "a") as f:
                     f.write(
-                        content[idx : idx + 50]
+                        content[idx : idx + 35]
                         + "\n{} {}\n---------\n".format(
-                            salary, get_scale_factor(content[idx : idx + 50])
+                            salary, get_scale_factor(content[idx : idx + 35])
                         )
                     )
                 return salary
 
     return False
+
+
+def _cleaned_exp(val):
+    val = re.sub(r"years|year|năm", "", val)
+    try:
+        return int(val)
+    except Exception as e:
+        print("Convert to int error for value: {}".format(val), e)
+        return val
 
 
 def get_year_exp(description):
@@ -176,14 +185,16 @@ def get_year_exp(description):
             truncated = description[idx - 15 : idx + len(k) + 15].replace("\n", " ")
             rex = r"[0-9]+-?[0-9]+\+? {}".format(k.split(" ")[0])
             numbers = re.findall(rex, truncated)
-            if numbers:
-                # print(truncated, numbers)
-                return numbers
+            if numbers and len(numbers) == 1:
+                vals = numbers[0].split("-")
+                len(vals) == 1 and vals.append(vals[0])
+                return [_cleaned_exp(n) for n in vals]
 
 
 def parse(data, parse_all=True):
     trainX = []
     trainY = []
+    exps = []
     for d in data:
         desc, title, salary = d
         text = title + " " + desc
@@ -196,14 +207,14 @@ def parse(data, parse_all=True):
             salary = _get_salaty_from_content(desc)
 
         if salary:
-            trainX.append(clean_text(text))
-            trainY.append(salary)
+            exp = get_year_exp(desc)
+            if exp:
+                print(exp, salary, desc[:200].replace("\n", " "))
+                trainX.append(clean_text(text))
+                trainY.append(salary)
+                exps.append(exp)
 
-        exp = get_year_exp(desc)
-        if exp and salary:
-            print(exp, salary, title)
-
-    return trainX, trainY
+    return trainX, trainY, exps
 
 
 def to_embedding(texts):
@@ -241,19 +252,21 @@ def load_data(get_new=True):
 
 if __name__ == "__main__":
     data = load_data(False)
-    train_x, train_y = parse(data)
+    train_x, train_y, exps = parse(data)
 
-    train_x = to_embedding(train_x)
+    # train_x = to_embedding(train_x)
     train_y = np.array(train_y)
+    exps = np.array(exps)
 
+    print(train_y.shape, exps.shape)
     max_salary = np.max(train_y)
     print("max_salary", max_salary)
-    train_y = train_y / max_salary
+    # train_y = train_y / max_salary
 
-    model = RandomForestRegressor(max_depth=3)
-    model.fit(train_x, train_y)
-    score = model.score(train_x, train_y)
-    print(score)
+    # model = RandomForestRegressor(max_depth=3)
+    # model.fit(train_x, train_y)
+    # score = model.score(train_x, train_y)
+    # print(score)
 
     # pred = model.predict(np.expand_dims(embedding.text2vec(test_txt), axis=0))
     # print(pred * max_salary)
@@ -261,3 +274,14 @@ if __name__ == "__main__":
     # filename = "./salary_estimation/storage/model.pkl"
     # pickle.dump(model, open(filename, "wb"))
     # pickle.dump(max_salary, open("./salary_estimation/storage/maxval.pkl", "wb"))
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import pandas as pd
+
+    train_y = np.mean(train_y, axis=1)
+    exps = np.mean(exps, axis=1)
+
+    df = pd.DataFrame({"salary": train_y, "exp": exps})
+    sns.jointplot(data=df, x="salary", y="exp")
+    plt.show()
