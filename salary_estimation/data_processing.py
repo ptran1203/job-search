@@ -190,6 +190,8 @@ def get_year_exp(description):
         "year of experience",
         "years experience",
         "year experience",
+        "years related experience",
+        "year related experience",
         "năm kinh nghiệm",
         "kinh nghiệm yêu cầu",
     ]

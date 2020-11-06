@@ -10,7 +10,7 @@ import constant
 from cache import cache
 import time
 from salary_estimation.word2vec import embedding
-from salary_estimation.data_collection import clean_text
+from salary_estimation.data_processing import clean_text
 
 
 def buildVS(request):
