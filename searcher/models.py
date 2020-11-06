@@ -4,7 +4,7 @@ from django.db import models
 import re
 import math
 from salary_estimation.word2vec import embedding
-from salary_estimation.data_collection import clean_text
+from salary_estimation.data_processing import clean_text
 
 # Django models
 class Vocabulary(models.Model):

@@ -7,12 +7,16 @@ import numpy as np
 import pickle
 from nltk.tokenize import word_tokenize
 from sklearn.ensemble import RandomForestRegressor
+import sys
 
 try:
     from salary_estimation.word2vec import embedding
 except ImportError:
     from word2vec import embedding
 
+DEBUG = len(sys.argv) == 2
+
+print(DEBUG)
 
 API_KEY = "1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8"
 SALARY_UNITS = ["$", "USD", "TRIỆU", "TRIEU"]
@@ -20,6 +24,11 @@ SALARY_DETECT_TERM = ["SALARY", "LƯƠNG", "LUONG"]
 nltk.download("punkt")
 
 host = "http://iseek.herokuapp.com"
+
+
+def pprint(*text):
+    if DEBUG:
+        print(*text)
 
 
 def collect_data():
@@ -31,10 +40,10 @@ def collect_data():
     r = requests.get(url)
     if r.status_code == 200:
         data = json.loads(r.text)
-        print("Get {} records".format(len(data)))
+        pprint("Get {} records".format(len(data)))
     else:
         data = []
-        print("Request failed with status code {}, {}".format(r.status_code, r.text))
+        pprint("Request failed with status code {}, {}".format(r.status_code, r.text))
     return data
 
 
@@ -54,6 +63,10 @@ def _cleaned_num(val):
 
 def to_usd(val, vnd, scale):
     val = to_float(_cleaned_num(val))
+
+    if val > 30000000:
+        val /= 10
+
     if val >= 1000000:
         return val * 0.000043
         scale = 1
@@ -89,9 +102,6 @@ def get_salary(val):
         [c in val.upper() for c in {"VND", "VNĐ", "TRIỆU", "TRIEU"}]
     )
 
-    if scale == 1e6:
-        print("-----> ", val.replace("\n", " "))
-
     if not is_vnd and scale == 1e6:
         """
         UPTO 20M/tháng.
@@ -103,7 +113,7 @@ def get_salary(val):
 
     vals = list(filter(lambda x: _cleaned_num(x) != "", vals))
 
-    if not vals:
+    if not vals or len(vals) > 2:
         return []
 
     if len(vals) == 2:
@@ -141,7 +151,10 @@ def _get_salaty_from_content(content):
     for term in SALARY_DETECT_TERM:
         idx = content.upper().find(term)
         if idx != -1:
-            salary = get_salary(content[idx : idx + 35])
+            trun = content[idx : idx + 45]
+            salary = get_salary(trun)
+            if salary and max(salary) > 10000:
+                print(trun)
             if not salary:
                 pass
                 # with open("content.txt", "a") as f:
@@ -149,22 +162,23 @@ def _get_salaty_from_content(content):
                 #         content[idx : idx + 50] + "\n{}\n---------\n".format(salary)
                 #     )
             else:
-                with open("have_salary.txt", "a") as f:
-                    f.write(
-                        content[idx : idx + 35]
-                        + "\n{} {}\n---------\n".format(
-                            salary, get_scale_factor(content[idx : idx + 35])
-                        )
-                    )
+                # with open("have_salary.txt", "a") as f:
+                #     f.write(
+                #         content[idx : idx + 35]
+                #         + "\n{} {}\n---------\n".format(
+                #             salary, get_scale_factor(content[idx : idx + 35])
+                #         )
+                #     )
                 return salary
 
     return False
 
 
 def _cleaned_exp(val):
-    val = re.sub(r"years|year|năm", "", val)
+    val = re.sub(r"years|year|năm| |\+", "", val)
+    val = val.replace(",", ".")
     try:
-        return int(val)
+        return float(val)
     except Exception as e:
         print("Convert to int error for value: {}".format(val), e)
         return val
@@ -185,6 +199,9 @@ def get_year_exp(description):
             truncated = description[idx - 15 : idx + len(k) + 15].replace("\n", " ")
             rex = r"[0-9]+-?[0-9]+\+? {}".format(k.split(" ")[0])
             numbers = re.findall(rex, truncated)
+            if not numbers:
+                rex = r"[0-9.,]+\+? {}".format(k.split(" ")[0])
+                numbers = re.findall(rex, truncated)
             if numbers and len(numbers) == 1:
                 vals = numbers[0].split("-")
                 len(vals) == 1 and vals.append(vals[0])
@@ -198,23 +215,29 @@ def parse(data, parse_all=True):
     for d in data:
         desc, title, salary = d
         text = title + " " + desc
-        salary = get_salary(salary)
-        if not salary:
-            if any(c in title.upper() for c in SALARY_UNITS):
-                salary = get_salary(title)
-
-        if not salary:
-            salary = _get_salaty_from_content(desc)
+        salary = get_salary_for_post(salary, title, desc)
 
         if salary:
             exp = get_year_exp(desc)
             if exp:
-                print(exp, salary, desc[:200].replace("\n", " "))
+                pprint(exp, salary, desc[:200].replace("\n", " "))
                 trainX.append(clean_text(text))
                 trainY.append(salary)
                 exps.append(exp)
 
     return trainX, trainY, exps
+
+
+def get_salary_for_post(salary, title, desc):
+    salary = get_salary(salary)
+    if not salary:
+        if any(c in title.upper() for c in SALARY_UNITS):
+            salary = get_salary(title)
+
+    if not salary:
+        salary = _get_salaty_from_content(desc)
+
+    return salary
 
 
 def to_embedding(texts):
@@ -258,9 +281,9 @@ if __name__ == "__main__":
     train_y = np.array(train_y)
     exps = np.array(exps)
 
-    print(train_y.shape, exps.shape)
+    pprint(train_y.shape, exps.shape)
     max_salary = np.max(train_y)
-    print("max_salary", max_salary)
+    pprint("max_salary", max_salary)
     # train_y = train_y / max_salary
 
     # model = RandomForestRegressor(max_depth=3)

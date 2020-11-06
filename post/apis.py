@@ -11,6 +11,8 @@ import datetime
 from helper import pagination
 from constant import API_KEY
 from salary_estimation.salary_prediction import salary_estimator
+from salary_estimation.data_processing import get_year_exp, get_salary_for_post
+
 
 sort_types = {
     1: "-post_date",
@@ -106,7 +108,13 @@ def get_posts_by_query(request):
 
 def estimate_salary(request, id):
     post = Post.objects.get(pk=id)
-    return JsonResponse({"salary": post.estimate_salary()})
+    return JsonResponse(
+        {
+            "salary_estimate": post.estimate_salary(),
+            "salary": get_salary_for_post(post.salary, post.title, post.content),
+            "years_exp": get_year_exp(post.content),
+        }
+    )
 
 
 def estimate_salary_text(request):
@@ -115,7 +123,13 @@ def estimate_salary_text(request):
     if mi > ma:
         mi, ma = ma, mi
 
-    return JsonResponse({"min": mi, "max": ma})
+    return JsonResponse(
+        {
+            "salary_estimate": "{}$-{}$".format(mi, ma),
+            "salary": get_salary_for_post("", "", text),
+            "years_exp": get_year_exp(text),
+        }
+    )
 
 
 # --                 utils                -- #
