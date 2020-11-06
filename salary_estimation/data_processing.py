@@ -197,13 +197,14 @@ def get_year_exp(description):
         return None
 
     key = key.group(0)
-    truncated = description[head - 15 : tail + 15].replace("\n", " ")
+    truncated = description[max(head - 15, 0) : tail + 15].replace("\n", " ")
     term = "year" if "year" in key else "năm"
     rex = r"[0-9]+-?[0-9]+\+? {}".format(term)
     numbers = re.findall(rex, truncated)
     if not numbers:
         rex = r"[0-9.,]+\+? {}".format(term)
         numbers = re.findall(rex, truncated)
+
     if numbers and len(numbers) == 1:
         vals = numbers[0].split("-")
         len(vals) == 1 and vals.append(vals[0])
