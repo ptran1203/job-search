@@ -16,11 +16,13 @@ except ImportError:
 
 DEBUG = len(sys.argv) == 2
 
-print(DEBUG)
 
 API_KEY = "1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8"
 SALARY_UNITS = ["$", "USD", "TRIỆU", "TRIEU"]
 SALARY_DETECT_TERM = ["SALARY", "LƯƠNG", "LUONG"]
+
+EXP_PARTERN = re.compile(r"year\D+experience|năm\D+kinh nghiệm", re.IGNORECASE)
+
 nltk.download("punkt")
 
 host = "http://iseek.herokuapp.com"
@@ -175,39 +177,39 @@ def _get_salaty_from_content(content):
 
 
 def _cleaned_exp(val):
-    val = re.sub(r"years|year|năm| |\+", "", val)
     val = val.replace(",", ".")
+    val = re.sub(r"[^0-9.]", "", val)
     try:
         return float(val)
     except Exception as e:
         print("Convert to int error for value: {}".format(val), e)
-        return val
+        return None
 
 
 def get_year_exp(description):
-    keywords = [
-        "years of experience",
-        "year of experience",
-        "years experience",
-        "year experience",
-        "years related experience",
-        "year related experience",
-        "năm kinh nghiệm",
-        "kinh nghiệm yêu cầu",
-    ]
-    for k in keywords:
-        idx = description.find(k)
-        if idx != -1:
-            truncated = description[idx - 15 : idx + len(k) + 15].replace("\n", " ")
-            rex = r"[0-9]+-?[0-9]+\+? {}".format(k.split(" ")[0])
-            numbers = re.findall(rex, truncated)
-            if not numbers:
-                rex = r"[0-9.,]+\+? {}".format(k.split(" ")[0])
-                numbers = re.findall(rex, truncated)
-            if numbers and len(numbers) == 1:
-                vals = numbers[0].split("-")
-                len(vals) == 1 and vals.append(vals[0])
-                return [_cleaned_exp(n) for n in vals]
+    key = EXP_PARTERN.search(description)
+    if not key:
+        return None
+
+    head, tail = key.span()
+
+    if tail - head > 100:
+        return None
+
+    key = key.group(0)
+    truncated = description[head - 15 : tail + 15].replace("\n", " ")
+    term = "year" if "year" in key else "năm"
+    rex = r"[0-9]+-?[0-9]+\+? {}".format(term)
+    numbers = re.findall(rex, truncated)
+    if not numbers:
+        rex = r"[0-9.,]+\+? {}".format(term)
+        numbers = re.findall(rex, truncated)
+    if numbers and len(numbers) == 1:
+        vals = numbers[0].split("-")
+        len(vals) == 1 and vals.append(vals[0])
+        vals = list(filter(lambda x: x is not None, [_cleaned_exp(n) for n in vals]))
+        len(vals) == 1 and vals.append(vals[0])
+        return vals
 
 
 def parse(data, parse_all=True):
