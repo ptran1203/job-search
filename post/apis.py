@@ -111,7 +111,7 @@ def estimate_salary(request, id):
     return JsonResponse(
         {
             "salary_estimate": post.estimate_salary(),
-            "salary": get_salary_for_post(post.salary, post.title, post.content),
+            "salary": get_salary_for_post(post.salary_range, post.title, post.content),
             "years_exp": get_year_exp(post.content),
         }
     )
