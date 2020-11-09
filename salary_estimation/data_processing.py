@@ -14,8 +14,10 @@ try:
 except ImportError:
     from word2vec import embedding
 
-DEBUG = len(sys.argv) == 2
+# Values are "train", "collect"
+OPT = -1 if len(sys.argv) < 2 else sys.argv[1]
 
+print(OPT)
 
 API_KEY = "1DyQ69AJGu6chA2B306VDQ5Qiy4mT4eH8"
 SALARY_UNITS = ["$", "USD", "TRIỆU", "TRIEU"]
@@ -29,7 +31,7 @@ host = "http://iseek.herokuapp.com"
 
 
 def pprint(*text):
-    if DEBUG:
+    if OPT == 0:
         print(*text)
 
 
@@ -213,7 +215,7 @@ def get_year_exp(description):
         return vals
 
 
-def parse(data, parse_all=True):
+def parse(data, get_exp=False):
     trainX = []
     trainY = []
     exps = []
@@ -224,8 +226,8 @@ def parse(data, parse_all=True):
 
         if salary:
             exp = get_year_exp(desc)
-            if exp:
-                pprint(exp, salary, desc[:200].replace("\n", " "))
+            if exp or get_exp:
+                # pprint(exp, salary, desc[:200].replace("\n", " "))
                 trainX.append(clean_text(text))
                 trainY.append(salary)
                 exps.append(exp)
@@ -279,29 +281,27 @@ def load_data(get_new=True):
 
 
 if __name__ == "__main__":
-    data = load_data(False)
-    train_x, train_y, exps = parse(data)
+    data = load_data(OPT == "collect")
+    train_x, train_y, exps = parse(data, get_exp=OPT == "train")
 
-    # train_x = to_embedding(train_x)
     train_y = np.array(train_y)
     exps = np.array(exps)
 
-    pprint(train_y.shape, exps.shape)
-    max_salary = np.max(train_y)
-    pprint("max_salary", max_salary)
-    # train_y = train_y / max_salary
+    if OPT == "train":
+        train_x = to_embedding(train_x)
+        print(train_y.shape, exps.shape)
+        max_salary = np.max(train_y)
+        print("max_salary", max_salary)
+        train_y = train_y / max_salary
 
-    # model = RandomForestRegressor(max_depth=3)
-    # model.fit(train_x, train_y)
-    # score = model.score(train_x, train_y)
-    # print(score)
+        model = RandomForestRegressor(max_depth=3)
+        model.fit(train_x, train_y)
+        score = model.score(train_x, train_y)
+        print(score)
 
-    # pred = model.predict(np.expand_dims(embedding.text2vec(test_txt), axis=0))
-    # print(pred * max_salary)
-
-    # filename = "./salary_estimation/storage/model.pkl"
-    # pickle.dump(model, open(filename, "wb"))
-    # pickle.dump(max_salary, open("./salary_estimation/storage/maxval.pkl", "wb"))
+        filename = "./salary_estimation/storage/model.pkl"
+        pickle.dump(model, open(filename, "wb"))
+        pickle.dump(max_salary, open("./salary_estimation/storage/maxval.pkl", "wb"))
 
     import matplotlib.pyplot as plt
     import seaborn as sns
