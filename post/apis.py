@@ -62,7 +62,7 @@ def clean(request):
     """
     delete out of date post
     """
-    date_15daysago = timezone.now() - datetime.timedelta(days=45)
+    date_15daysago = timezone.now() - datetime.timedelta(days=365)
     count = Post.objects.filter(post_date__lt=date_15daysago).count()
     Post.objects.filter(post_date__lt=date_15daysago).delete()
     slack.send("deleted %s posts" % (count))
