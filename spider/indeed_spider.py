@@ -13,9 +13,10 @@ class IndeedSpider:
         self.keywords = [
                          'data scientist', 'machine learning',
                          'computer vision', 'back-end', 'front-end',
-                         'dev-ops',
+                         'dev-ops', 'data analyst', 'artifical intelligence',
+                         'ai engineer', 'data engineer',
                         ]
-        self.locations = ['Thành phố Hồ Chí Minh', 'Hà Nội']
+        self.locations = ['Thành phố Hồ Chí Minh', 'Hà Nội', 'Việt Nam']
         self.crawled = []
 
 

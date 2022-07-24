@@ -40,8 +40,7 @@ class ItViecSpider(BaseSpider):
 
     @staticmethod
     def is_accept_url(url):
-        return "/viec-lam-it/" in url
-
+        return "/viec-lam-it/" in url or "/it-jobs/" in url
 
 def report(running_time, crawled_pages, src_type):
     r = requests.post(
